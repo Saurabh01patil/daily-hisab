@@ -118,43 +118,51 @@ document.querySelectorAll("input").forEach(i=>i.addEventListener("input",calcula
 function onDateChange(){
   if(!date.value) return;
 
-  // Load selected date data
-  fetch(SCRIPT_URL+"?date="+date.value)
-    .then(r=>r.json())
-    .then(d=>{
-      if(d.status!=="NOT_FOUND"){
-        Object.keys(d).forEach(k=>{
-          if(document.getElementById(k)){
-            document.getElementById(k).value=d[k];
-          }
-        });
-      }else{
-        document.querySelectorAll("input").forEach(i=>{
-          if(i.type!=="date") i.value="";
-        });
-      }
-
-      // Load previous saving of selected date
-      fetch(SCRIPT_URL+"?prevOf="+date.value)
-        .then(r=>r.json())
-        .then(p=>{
-          prevCashInput.value=p.currentCash||0;
-          prevOnlineInput.value=p.currentOnline||0;
-          calculate();
-        });
+  // 1️⃣ Load PREVIOUS DAY saving FIRST
+  fetch(SCRIPT_URL + "?prevOf=" + date.value)
+    .then(r => r.json())
+    .then(p => {
+      prevCashInput.value = p.currentCash || 0;
+      prevOnlineInput.value = p.currentOnline || 0;
+      calculate();
     });
 
-  // Weekly info
-  fetch(SCRIPT_URL+"?action=lastMonday&today="+date.value)
-    .then(r=>r.json())
-    .then(w=>{
+  // 2️⃣ Load SAME DATE data (if exists)
+  fetch(SCRIPT_URL + "?date=" + date.value)
+    .then(r => r.json())
+    .then(d => {
+      if(d.status !== "NOT_FOUND"){
+        // Existing entry → fill form
+        Object.keys(d).forEach(k => {
+          if(document.getElementById(k)){
+            document.getElementById(k).value = d[k];
+          }
+        });
+        msg.innerText = "Existing entry loaded (Edit mode)";
+      } else {
+        // New date → clear form
+        document.querySelectorAll("input").forEach(i=>{
+          if(i.type !== "date") i.value = "";
+        });
+        msg.innerText = "New entry";
+      }
+      calculate();
+    });
+
+  // 3️⃣ Weekly info
+  fetch(SCRIPT_URL + "?action=lastMonday&today=" + date.value)
+    .then(r => r.json())
+    .then(w => {
       if(w.date){
-        weeklyInfo.innerText=`Last Monday (${w.date}) – Chicken ₹${w.chicken}, Sell ₹${w.sell}`;
-      }else{
-        weeklyInfo.innerText="–";
+        weeklyInfo.innerText =
+          `Last Monday (${w.date}) – Chicken ₹${w.chicken}, Sell ₹${w.sell}`;
+      } else {
+        weeklyInfo.innerText = "–";
       }
     });
 }
+
+
 
 date.addEventListener("change",onDateChange);
 
@@ -236,6 +244,7 @@ fetch(SCRIPT_URL, {
 </html>
 
  
+
 
 
 
