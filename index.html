@@ -119,19 +119,25 @@ function calculate(){
   prevTotal.innerText = prevCash + prevOnline;
 }
 
-document.querySelectorAll("input").forEach(i=>i.addEventListener("input",calculate));
+document.querySelectorAll(
+  ".invCash, .invOnline, #SellCash, #SellOnline, #BiryaniMade, #FriedMade, #BiryaniLeft, #FriedLeft"
+).forEach(i => i.addEventListener("input", calculate));
+
 
 async function onDateChange(){
   if(!date.value) return;
 
   const requestId = ++activeRequest;
 
-  // 🔒 date select hote hi inputs enable
-  setInputsDisabled(false);
+  // 🔒 sab inputs band
+  setInputsDisabled(true);
 
   // 🔄 loader show
   loader.style.display = "block";
   msg.innerText = "";
+
+  // 🔑 browser ko repaint ka time do
+  await new Promise(r => setTimeout(r, 50));
 
   /* ===== PREVIOUS SAVING ===== */
   const p = await (await fetch(
@@ -166,8 +172,9 @@ async function onDateChange(){
     msg.innerText = "New entry";
   }
 
-  // ❌ loader hide
+  // ✅ loader hide + inputs enable
   loader.style.display = "none";
+  setInputsDisabled(false);
 
   calculate();
 }
@@ -201,6 +208,7 @@ function saveDay(){
 
 </body>
 </html>
+
 
 
 
