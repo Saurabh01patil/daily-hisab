@@ -79,9 +79,7 @@ Sell Online: <input id="SellOnline">
 Cash ₹ <span id="CurrentCash">0</span><br>
 Online ₹ <span id="CurrentOnline">0</span><br>
 <p class="total">Total ₹ <span id="CurrentTotal">0</span></p>
-<p id="loader" style="display:none;color:#555;font-weight:bold">
-  ⏳ Loading data...
-</p>
+
 
 <button onclick="saveDay()">Save / Update Day</button>
 <p id="msg"></p>
@@ -90,12 +88,22 @@ Online ₹ <span id="CurrentOnline">0</span><br>
 
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aqSyRrVVrAEEGFRj9RxRrCq66nzaNdoSl96xbyxPXzZGeyUXG0g/exec";
+  let popupLoader;
+
 let activeRequest = 0; 
 function num(v){ return Number(v)||0; }
 function setInputsDisabled(disabled){
   document.querySelectorAll(
     ".invCash, .invOnline, #SellCash, #SellOnline, #BiryaniMade, #FriedMade, #BiryaniLeft, #FriedLeft"
   ).forEach(i => i.disabled = disabled);
+}
+function showLoader(text="Please wait..."){
+  popupLoader.style.display = "flex";
+  popupLoader.querySelector("div").innerText = "⏳ " + text;
+}
+
+function hideLoader(){
+  popupLoader.style.display = "none";
 }
 
 
@@ -129,14 +137,9 @@ async function onDateChange(){
 
   const requestId = ++activeRequest;
 
-  // 🔒 sab inputs band
   setInputsDisabled(true);
+  showLoader("Loading data...");
 
-  // 🔄 loader show
-  loader.style.display = "block";
-  msg.innerText = "";
-
-  // 🔑 browser ko repaint ka time do
   await new Promise(r => setTimeout(r, 50));
 
   /* ===== PREVIOUS SAVING ===== */
@@ -144,7 +147,10 @@ async function onDateChange(){
     SCRIPT_URL + "?prevOf=" + date.value
   )).json();
 
-  if(requestId !== activeRequest) return;
+  if(requestId !== activeRequest){
+    hideLoader();
+    return;
+  }
 
   prevCashInput.value = p.currentCash || 0;
   prevOnlineInput.value = p.currentOnline || 0;
@@ -156,39 +162,44 @@ async function onDateChange(){
     SCRIPT_URL + "?date=" + date.value
   )).json();
 
-  if(requestId !== activeRequest) return;
+  if(requestId !== activeRequest){
+    hideLoader();
+    return;
+  }
 
   if(d.status !== "NOT_FOUND"){
     Object.keys(d).forEach(k=>{
       const el = document.getElementById(k);
       if(el) el.value = d[k];
     });
-    msg.innerText = "Existing entry loaded (Edit mode)";
+    msg.innerText = "Existing entry loaded";
   } else {
     document.querySelectorAll(
       ".invCash, .invOnline, #SellCash, #SellOnline, #BiryaniMade, #FriedMade, #BiryaniLeft, #FriedLeft"
     ).forEach(i => i.value = "");
-
     msg.innerText = "New entry";
   }
 
-  // ✅ loader hide + inputs enable
-  loader.style.display = "none";
+  hideLoader();
   setInputsDisabled(false);
-
   calculate();
 }
 
 
 date.addEventListener("change",onDateChange);
-  
-function saveDay(){
-  if(!date.value){ alert("Date select karo"); return; }
+async function saveDay(){
+  if(!date.value){
+    alert("Date select karo");
+    return;
+  }
 
-  const data={ date:date.value };
+  setInputsDisabled(true);
+  showLoader("Saving data...");
+
+  const data = { date: date.value };
 
   document.querySelectorAll("input").forEach(i=>{
-    if(i.id && i.type!=="date") data[i.id]=i.value;
+    if(i.id && i.type!=="date") data[i.id] = i.value;
   });
 
   data.CurrentCash = CurrentCash.innerText;
@@ -196,18 +207,50 @@ function saveDay(){
   data.CurrentTotal = CurrentTotal.innerText;
   data.SellTotal = SellTotal.innerText;
 
-  fetch(SCRIPT_URL,{
-    method:"POST",
-    body:JSON.stringify(data)
-  })
-  .then(()=>msg.innerText="Saved ✔");
+  try{
+    await fetch(SCRIPT_URL,{
+      method:"POST",
+      body:JSON.stringify(data)
+    });
+
+    msg.innerText = "Saved ✔";
+  }catch(err){
+    msg.innerText = "Error ❌";
+  }
+
+  hideLoader();
+  setInputsDisabled(false);
 }
-  setInputsDisabled(true);
+popupLoader = document.getElementById("popupLoader");
+setInputsDisabled(true); // page load pe inputs band
+
 
 </script>
+<!-- LOADING POPUP -->
+<div id="popupLoader" style="
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.4);
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+">
+  <div style="
+    background:#fff;
+    padding:20px 30px;
+    border-radius:8px;
+    font-size:18px;
+    font-weight:bold;
+  ">
+    ⏳ Please wait...
+  </div>
+</div>
 
 </body>
 </html>
+
 
 
 
