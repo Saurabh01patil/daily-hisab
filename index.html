@@ -122,10 +122,19 @@ async function onDateChange(){
   const prevRes = await fetch(SCRIPT_URL + "?prevOf=" + date.value);
   const p = await prevRes.json();
 
-  prevCashInput.value = p.currentCash || 0;
-  prevOnlineInput.value = p.currentOnline || 0;
-  prevTotal.innerText =
-    Number(prevCashInput.value) + Number(prevOnlineInput.value);
+prevCashInput.value =
+  (p.currentCash !== undefined && p.currentCash !== null)
+    ? p.currentCash
+    : 0;
+
+prevOnlineInput.value =
+  (p.currentOnline !== undefined && p.currentOnline !== null)
+    ? p.currentOnline
+    : 0;
+
+prevTotal.innerText =
+  Number(prevCashInput.value) + Number(prevOnlineInput.value);
+
 
   // 2️⃣ SAME DATE data
   const dayRes = await fetch(SCRIPT_URL + "?date=" + date.value);
@@ -245,6 +254,7 @@ fetch(SCRIPT_URL, {
 </html>
 
  
+
 
 
 
