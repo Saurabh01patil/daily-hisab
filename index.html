@@ -27,9 +27,9 @@ button{background:#222;color:#fff;border:none;padding:8px 14px;border-radius:4px
 <!-- PREVIOUS SAVING -->
 <div class="container box">
 <b>Previous Saving</b><br>
-Cash: ₹ <input id="prevCashInput">
-Online: ₹ <input id="prevOnlineInput">
-Total: ₹ <span id="prevTotal">0</span>
+Cash ₹ <input id="prevCashInput" readonly>
+Online ₹ <input id="prevOnlineInput" readonly>
+Total ₹ <span id="prevTotal">0</span>
 </div>
 
 <!-- WEEKLY INFO -->
@@ -60,8 +60,8 @@ Total: ₹ <span id="prevTotal">0</span>
 <div class="row"><label>Other</label><input class="invCash" id="OtherCash"><input class="invOnline" id="OtherOnline"></div>
 
 <p class="total">
-Investment Cash: ₹ <span id="invCashTotal">0</span> |
-Investment Online: ₹ <span id="invOnlineTotal">0</span>
+Investment Cash ₹ <span id="invCashTotal">0</span> |
+Investment Online ₹ <span id="invOnlineTotal">0</span>
 </p>
 
 <div class="section">---- Production ----</div>
@@ -73,12 +73,12 @@ Remaining Fried (kg): <input id="FriedLeft">
 <div class="section">---- Sell ----</div>
 Sell Cash: <input id="SellCash">
 Sell Online: <input id="SellOnline">
-<p class="total">Total Sell: ₹ <span id="SellTotal">0</span></p>
+<p class="total">Total Sell ₹ <span id="SellTotal">0</span></p>
 
 <div class="section">---- Current Saving ----</div>
-Cash: ₹ <span id="CurrentCash">0</span><br>
-Online: ₹ <span id="CurrentOnline">0</span><br>
-<p class="total">Total: ₹ <span id="CurrentTotal">0</span></p>
+Cash ₹ <span id="CurrentCash">0</span><br>
+Online ₹ <span id="CurrentOnline">0</span><br>
+<p class="total">Total ₹ <span id="CurrentTotal">0</span></p>
 
 <button onclick="saveDay()">Save / Update Day</button>
 <p id="msg"></p>
@@ -86,183 +86,82 @@ Online: ₹ <span id="CurrentOnline">0</span><br>
 </div>
 
 <script>
-/* ================= CONFIG ================= */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzhdC2f9Zbz1E4MFnRU2C6FjnFiMhyOc3IRqiZQzNGuY9th72GFdEx8wbJmkuZ135y3EQ/exec";
+const SCRIPT_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
 
-/* ================= HELPERS ================= */
 function num(v){ return Number(v)||0; }
 
-/* ================= CALCULATION ================= */
 function calculate(){
   let invCash=0, invOnline=0;
   document.querySelectorAll(".invCash").forEach(i=>invCash+=num(i.value));
   document.querySelectorAll(".invOnline").forEach(i=>invOnline+=num(i.value));
-  invCashTotal.innerText=invCash;
-  invOnlineTotal.innerText=invOnline;
+
+  invCashTotal.innerText = invCash;
+  invOnlineTotal.innerText = invOnline;
 
   SellTotal.innerText = num(SellCash.value)+num(SellOnline.value);
 
-  let prevCash=num(prevCashInput.value);
-  let prevOnline=num(prevOnlineInput.value);
+  let prevCash = num(prevCashInput.value);
+  let prevOnline = num(prevOnlineInput.value);
 
   CurrentCash.innerText = prevCash + num(SellCash.value) - invCash;
   CurrentOnline.innerText = prevOnline + num(SellOnline.value) - invOnline;
   CurrentTotal.innerText = num(CurrentCash.innerText)+num(CurrentOnline.innerText);
 
-  prevTotal.innerText = prevCash+prevOnline;
+  prevTotal.innerText = prevCash + prevOnline;
 }
 
 document.querySelectorAll("input").forEach(i=>i.addEventListener("input",calculate));
 
-/* ================= DATE CHANGE ================= */
 async function onDateChange(){
   if(!date.value) return;
 
-  // 1️⃣ PREVIOUS DAY saving
-  const prevRes = awaitfetch(SCRIPT_URL + "?prevOf=" + date.value);
-  const p = await prevRes.json();
+  // previous saving
+  const p = await (await fetch(SCRIPT_URL+"?prevOf="+date.value)).json();
+  prevCashInput.value = p.currentCash || 0;
+  prevOnlineInput.value = p.currentOnline || 0;
+  prevTotal.innerText = num(prevCashInput.value)+num(prevOnlineInput.value);
 
-prevCashInput.value =
-  (p.currentCash !== undefined && p.currentCash !== null)
-    ? p.currentCash
-    : 0;
-
-prevOnlineInput.value =
-  (p.currentOnline !== undefined && p.currentOnline !== null)
-    ? p.currentOnline
-    : 0;
-
-prevTotal.innerText =
-  Number(prevCashInput.value) + Number(prevOnlineInput.value);
-
-
-
-  // 2️⃣ SAME DATE data
-  const dayRes = await fetch(SCRIPT_URL + "?date=" + date.value);
-  const d = await dayRes.json();
-
-if (d.status !== "NOT_FOUND") {
-
-  Object.keys(d).forEach(k => {
-    const el = document.getElementById(k);
-    if (el) {
-      el.value = d[k];
-    }
-  });
-
-  msg.innerText = "Existing entry loaded (Edit mode)";
-}
- else {
-    document.querySelectorAll(
-      ".invCash, .invOnline, #SellCash, #SellOnline, #BiryaniMade, #FriedMade, #BiryaniLeft, #FriedLeft"
-    ).forEach(i => i.value = "");
-
-    msg.innerText = "New entry";
+  // existing date data
+  const d = await (await fetch(SCRIPT_URL+"?date="+date.value)).json();
+  if(d.status!=="NOT_FOUND"){
+    Object.keys(d).forEach(k=>{
+      const el=document.getElementById(k);
+      if(el) el.value=d[k];
+    });
+    msg.innerText="Existing entry loaded (Edit mode)";
+  } else {
+    document.querySelectorAll("input").forEach(i=>{
+      if(i.type!=="date") i.value="";
+    });
+    msg.innerText="New entry";
   }
 
   calculate();
-
-  // 3️⃣ Weekly info
-  const weekRes = await fetch(
-    SCRIPT_URL + "?action=lastMonday&today=" + date.value
-  );
-  const w = await weekRes.json();
-
-  weeklyInfo.innerText = w.date
-    ? `Last Monday (${w.date}) – Chicken ₹${w.chicken}, Sell ₹${w.sell}`
-    : "–";
 }
-
-
 
 date.addEventListener("change",onDateChange);
 
-/* ================= SAVE ================= */
-
 function saveDay(){
-  if(!date.value){
-    alert("Date select karo");
-    return;
-  }
+  if(!date.value){ alert("Date select karo"); return; }
 
-  let data={
-    date:date.value,
+  const data={ date:date.value };
 
-    ChickenCash:ChickenCash.value,
-    ChickenOnline:ChickenOnline.value,
-    DairyCash:DairyCash.value,
-    DairyOnline:DairyOnline.value,
-    GroceryCash:GroceryCash.value,
-    GroceryOnline:GroceryOnline.value,
-    SabjiCash:SabjiCash.value,
-    SabjiOnline:SabjiOnline.value,
-    DisposalCash:DisposalCash.value,
-    DisposalOnline:DisposalOnline.value,
-    GasCash:GasCash.value,
-    GasOnline:GasOnline.value,
-    DieselCash:DieselCash.value,
-    DieselOnline:DieselOnline.value,
-    PetrolCash:PetrolCash.value,
-    PetrolOnline:PetrolOnline.value,
-    EggCash:EggCash.value,
-    EggOnline:EggOnline.value,
-    SachinCash:SachinCash.value,
-    SachinOnline:SachinOnline.value,
-    SattuCash:SattuCash.value,
-    SattuOnline:SattuOnline.value,
-    OtherCash:OtherCash.value,
-    OtherOnline:OtherOnline.value,
+  document.querySelectorAll("input").forEach(i=>{
+    if(i.id && i.type!=="date") data[i.id]=i.value;
+  });
 
-    SellCash:SellCash.value,
-    SellOnline:SellOnline.value,
-    SellTotal:SellTotal.innerText,
+  data.CurrentCash = CurrentCash.innerText;
+  data.CurrentOnline = CurrentOnline.innerText;
+  data.CurrentTotal = CurrentTotal.innerText;
+  data.SellTotal = SellTotal.innerText;
 
-    BiryaniMade:BiryaniMade.value,
-    FriedMade:FriedMade.value,
-    BiryaniLeft:BiryaniLeft.value,
-    FriedLeft:FriedLeft.value,
-
-    CurrentCash:CurrentCash.innerText,
-    CurrentOnline:CurrentOnline.innerText,
-    CurrentTotal:CurrentTotal.innerText
-  };
-
-fetch(SCRIPT_URL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "text/plain;charset=utf-8"
-  },
-  body: JSON.stringify(data)
-})
-.then(r => r.text())
-.then(res => {
-  msg.innerText = "Saved ✔";
-})
-.catch(err => {
-  msg.innerText = "Error ❌";
-  console.error(err);
-});
-
-
-
-  msg.innerText = "Saved ✔ (Sheet me check karo)";
+  fetch(SCRIPT_URL,{
+    method:"POST",
+    body:JSON.stringify(data)
+  })
+  .then(()=>msg.innerText="Saved ✔");
 }
 </script>
 
-
-
 </body>
 </html>
-
- 
-
-
-
-
-
-
-
-
-
-
-
