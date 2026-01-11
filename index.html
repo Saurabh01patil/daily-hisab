@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Daily Hisab</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{font-family:Arial;background:#f4f6f8;margin:0}
+.header{background:#222;color:#fff;padding:12px 20px;font-size:20px}
+.container{max-width:1000px;margin:15px auto;background:#fff;padding:20px;border-radius:8px}
+.section{font-weight:bold;margin:18px 0 10px}
+.row{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:8px;margin-bottom:6px}
+.row label{font-weight:normal}
+.row input{padding:6px}
+.total{font-weight:bold;margin-top:8px}
+button{background:#222;color:#fff;border:none;padding:8px 14px;border-radius:4px;cursor:pointer}
+.box{background:#f1f1f1;padding:10px;border-radius:6px;margin-bottom:10px}
+.info{background:#e8ffe8;padding:10px;border-radius:6px;margin-bottom:10px}
+</style>
+</head>
+
+<body>
+
+<div class="header">📊 Daily Hisab</div>
+
+<!-- PREVIOUS SAVING -->
+<div class="container box">
+<b>Previous Saving</b><br>
+Cash: ₹ <input id="prevCashInput">
+Online: ₹ <input id="prevOnlineInput">
+Total: ₹ <span id="prevTotal">0</span>
+</div>
+
+<!-- WEEKLY INFO -->
+<div class="container info">
+<b>Weekly Info</b><br>
+<span id="weeklyInfo">–</span>
+</div>
+
+<div class="container">
+
+<div class="section">Date</div>
+<input type="date" id="date">
+
+<div class="section">---- Investment (Cash / Online) ----</div>
+<div class="row"><label>Item</label><label>Cash</label><label>Online</label></div>
+
+<div class="row"><label>Chicken</label><input class="invCash" id="ChickenCash"><input class="invOnline" id="ChickenOnline"></div>
+<div class="row"><label>Dairy</label><input class="invCash" id="DairyCash"><input class="invOnline" id="DairyOnline"></div>
+<div class="row"><label>Grocery</label><input class="invCash" id="GroceryCash"><input class="invOnline" id="GroceryOnline"></div>
+<div class="row"><label>Sabji</label><input class="invCash" id="SabjiCash"><input class="invOnline" id="SabjiOnline"></div>
+<div class="row"><label>Disposal</label><input class="invCash" id="DisposalCash"><input class="invOnline" id="DisposalOnline"></div>
+<div class="row"><label>Gas</label><input class="invCash" id="GasCash"><input class="invOnline" id="GasOnline"></div>
+<div class="row"><label>Diesel</label><input class="invCash" id="DieselCash"><input class="invOnline" id="DieselOnline"></div>
+<div class="row"><label>Petrol</label><input class="invCash" id="PetrolCash"><input class="invOnline" id="PetrolOnline"></div>
+<div class="row"><label>Egg</label><input class="invCash" id="EggCash"><input class="invOnline" id="EggOnline"></div>
+<div class="row"><label>Sachin Salary</label><input class="invCash" id="SachinCash"><input class="invOnline" id="SachinOnline"></div>
+<div class="row"><label>Sattu Salary</label><input class="invCash" id="SattuCash"><input class="invOnline" id="SattuOnline"></div>
+<div class="row"><label>Other</label><input class="invCash" id="OtherCash"><input class="invOnline" id="OtherOnline"></div>
+
+<p class="total">
+Investment Cash: ₹ <span id="invCashTotal">0</span> |
+Investment Online: ₹ <span id="invOnlineTotal">0</span>
+</p>
+
+<div class="section">---- Production ----</div>
+Biryani Made (kg): <input id="BiryaniMade">
+Fried Made (kg): <input id="FriedMade"><br><br>
+Remaining Biryani (kg): <input id="BiryaniLeft">
+Remaining Fried (kg): <input id="FriedLeft">
+
+<div class="section">---- Sell ----</div>
+Sell Cash: <input id="SellCash">
+Sell Online: <input id="SellOnline">
+<p class="total">Total Sell: ₹ <span id="SellTotal">0</span></p>
+
+<div class="section">---- Current Saving ----</div>
+Cash: ₹ <span id="CurrentCash">0</span><br>
+Online: ₹ <span id="CurrentOnline">0</span><br>
+<p class="total">Total: ₹ <span id="CurrentTotal">0</span></p>
+
+<button onclick="saveDay()">Save / Update Day</button>
+<p id="msg"></p>
+
+</div>
+
+<script>
+/* ================= CONFIG ================= */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbySjfSjwSyAtdO18TA24QGe26Nxf7M2jjO60GisHru-27HJud7a39EqsCllXntHqTLQaA/exec";
+
+/* ================= HELPERS ================= */
+function num(v){ return Number(v)||0; }
+
+/* ================= CALCULATION ================= */
+function calculate(){
+  let invCash=0, invOnline=0;
+  document.querySelectorAll(".invCash").forEach(i=>invCash+=num(i.value));
+  document.querySelectorAll(".invOnline").forEach(i=>invOnline+=num(i.value));
+  invCashTotal.innerText=invCash;
+  invOnlineTotal.innerText=invOnline;
+
+  SellTotal.innerText = num(SellCash.value)+num(SellOnline.value);
+
+  let prevCash=num(prevCashInput.value);
+  let prevOnline=num(prevOnlineInput.value);
+
+  CurrentCash.innerText = prevCash + num(SellCash.value) - invCash;
+  CurrentOnline.innerText = prevOnline + num(SellOnline.value) - invOnline;
+  CurrentTotal.innerText = num(CurrentCash.innerText)+num(CurrentOnline.innerText);
+
+  prevTotal.innerText = prevCash+prevOnline;
+}
+
+document.querySelectorAll("input").forEach(i=>i.addEventListener("input",calculate));
+
+/* ================= DATE CHANGE ================= */
+function onDateChange(){
+  if(!date.value) return;
+
+  // Load selected date data
+  fetch(SCRIPT_URL+"?date="+date.value)
+    .then(r=>r.json())
+    .then(d=>{
+      if(d.status!=="NOT_FOUND"){
+        Object.keys(d).forEach(k=>{
+          if(document.getElementById(k)){
+            document.getElementById(k).value=d[k];
+          }
+        });
+      }else{
+        document.querySelectorAll("input").forEach(i=>{
+          if(i.type!=="date") i.value="";
+        });
+      }
+
+      // Load previous saving of selected date
+      fetch(SCRIPT_URL+"?prevOf="+date.value)
+        .then(r=>r.json())
+        .then(p=>{
+          prevCashInput.value=p.currentCash||0;
+          prevOnlineInput.value=p.currentOnline||0;
+          calculate();
+        });
+    });
+
+  // Weekly info
+  fetch(SCRIPT_URL+"?action=lastMonday&today="+date.value)
+    .then(r=>r.json())
+    .then(w=>{
+      if(w.date){
+        weeklyInfo.innerText=`Last Monday (${w.date}) – Chicken ₹${w.chicken}, Sell ₹${w.sell}`;
+      }else{
+        weeklyInfo.innerText="–";
+      }
+    });
+}
+
+date.addEventListener("change",onDateChange);
+
+/* ================= SAVE ================= */
+
+function saveDay(){
+  if(!date.value){
+    alert("Date select karo");
+    return;
+  }
+
+  let data={
+    date:date.value,
+
+    ChickenCash:ChickenCash.value,
+    ChickenOnline:ChickenOnline.value,
+    DairyCash:DairyCash.value,
+    DairyOnline:DairyOnline.value,
+    GroceryCash:GroceryCash.value,
+    GroceryOnline:GroceryOnline.value,
+    SabjiCash:SabjiCash.value,
+    SabjiOnline:SabjiOnline.value,
+    DisposalCash:DisposalCash.value,
+    DisposalOnline:DisposalOnline.value,
+    GasCash:GasCash.value,
+    GasOnline:GasOnline.value,
+    DieselCash:DieselCash.value,
+    DieselOnline:DieselOnline.value,
+    PetrolCash:PetrolCash.value,
+    PetrolOnline:PetrolOnline.value,
+    EggCash:EggCash.value,
+    EggOnline:EggOnline.value,
+    SachinCash:SachinCash.value,
+    SachinOnline:SachinOnline.value,
+    SattuCash:SattuCash.value,
+    SattuOnline:SattuOnline.value,
+    OtherCash:OtherCash.value,
+    OtherOnline:OtherOnline.value,
+
+    SellCash:SellCash.value,
+    SellOnline:SellOnline.value,
+    SellTotal:SellTotal.innerText,
+
+    BiryaniMade:BiryaniMade.value,
+    FriedMade:FriedMade.value,
+    BiryaniLeft:BiryaniLeft.value,
+    FriedLeft:FriedLeft.value,
+
+    CurrentCash:CurrentCash.innerText,
+    CurrentOnline:CurrentOnline.innerText,
+    CurrentTotal:CurrentTotal.innerText
+  };
+
+  fetch(SCRIPT_URL,{
+    method:"POST",
+    mode:"no-cors",
+    body: JSON.stringify(data)
+  });
+
+  msg.innerText = "Saved ✔ (Sheet me check karo)";
+}
+</script>
+
+
+
+</body>
+</html>
+
+ 
