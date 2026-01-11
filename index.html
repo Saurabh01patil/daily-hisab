@@ -141,18 +141,18 @@ prevTotal.innerText =
   const dayRes = await fetch(SCRIPT_URL + "?date=" + date.value);
   const d = await dayRes.json();
 
-  if(d.status !== "NOT_FOUND"){
-    date.value = d.Date; // 🔥 important
+if (d.status !== "NOT_FOUND") {
 
-    Object.keys(d).forEach(k=>{
-      const el = document.getElementById(k);
-      if(el){
-        el.value = d[k];
-      }
-    });
+  Object.keys(d).forEach(k => {
+    const el = document.getElementById(k);
+    if (el) {
+      el.value = d[k];
+    }
+  });
 
-    msg.innerText = "Existing entry loaded (Edit mode)";
-  } else {
+  msg.innerText = "Existing entry loaded (Edit mode)";
+}
+ else {
     document.querySelectorAll(
       ".invCash, .invOnline, #SellCash, #SellOnline, #BiryaniMade, #FriedMade, #BiryaniLeft, #FriedLeft"
     ).forEach(i => i.value = "");
@@ -255,6 +255,7 @@ fetch(SCRIPT_URL, {
 </html>
 
  
+
 
 
 
