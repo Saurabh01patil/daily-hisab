@@ -110,8 +110,7 @@ Online ₹ <span id="CurrentOnline">0</span><br>
 
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aqSyRrVVrAEEGFRj9RxRrCq66nzaNdoSl96xbyxPXzZGeyUXG0g/exec";
-  let popupLoader;
-popupLoader = document.getElementById("popupLoader");
+ let popupLoader = null;   // sirf declare
 let activeRequest = 0; 
 function num(v){ return Number(v)||0; }
 function setInputsDisabled(disabled){
@@ -119,7 +118,7 @@ function setInputsDisabled(disabled){
     ".invCash, .invOnline, #SellCash, #SellOnline, #BiryaniMade, #FriedMade, #BiryaniLeft, #FriedLeft"
   ).forEach(i => i.disabled = disabled);
 }
-setInputsDisabled(true); // page load pe inputs band
+
 function showLoader(text="Please wait..."){
   popupLoader.style.display = "flex";
   popupLoader.querySelector("div").innerText = "⏳ " + text;
@@ -241,18 +240,23 @@ async function saveDay(){
     msg.innerText = "Error ❌";
   }
 
-  hideLoader();
-await new Promise(r => setTimeout(r, 300));
+ await new Promise(r => setTimeout(r, 300));
 hideLoader();
-  setInputsDisabled(false);
+setInputsDisabled(false);
+
 }
 
+window.addEventListener("DOMContentLoaded", () => {
+  popupLoader = document.getElementById("popupLoader");
+  setInputsDisabled(true); // page load pe inputs band
+});
 
 
 </script>
 
 </body>
 </html>
+
 
 
 
