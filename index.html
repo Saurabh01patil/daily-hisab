@@ -122,21 +122,25 @@ async function onDateChange(){
   prevTotal.innerText = num(prevCashInput.value)+num(prevOnlineInput.value);
 
   // existing date data
-  const d = await (await fetch(SCRIPT_URL+"?date="+date.value)).json();
-  if(d.status!=="NOT_FOUND"){
-    Object.keys(d).forEach(k=>{
-      const el=document.getElementById(k);
-      if(el) el.value=d[k];
-    });
-    msg.innerText="Existing entry loaded (Edit mode)";
-  } else {
-    document.querySelectorAll("input").forEach(i=>{
-      if(i.type!=="date") i.value="";
-    });
-    msg.innerText="New entry";
-  }
+ const d = await (await fetch(SCRIPT_URL+"?date="+date.value)).json();
 
-  calculate();
+if(d.status!=="NOT_FOUND"){
+  Object.keys(d).forEach(k=>{
+    const el=document.getElementById(k);
+    if(el) el.value=d[k];
+  });
+  msg.innerText="Existing entry loaded (Edit mode)";
+} else {
+  // ❗ sirf TODAY ke inputs clear honge
+  document.querySelectorAll(
+    ".invCash, .invOnline, #SellCash, #SellOnline, #BiryaniMade, #FriedMade, #BiryaniLeft, #FriedLeft"
+  ).forEach(i => i.value = "");
+
+  msg.innerText="New entry";
+}
+
+calculate();
+
 }
 
 date.addEventListener("change",onDateChange);
@@ -165,5 +169,6 @@ function saveDay(){
 
 </body>
 </html>
+
 
 
