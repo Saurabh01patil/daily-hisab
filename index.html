@@ -87,7 +87,7 @@ Online ₹ <span id="CurrentOnline">0</span><br>
 
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aqSyRrVVrAEEGFRj9RxRrCq66nzaNdoSl96xbyxPXzZGeyUXG0g/exec";
-
+let activeRequest = 0; 
 function num(v){ return Number(v)||0; }
 
 function calculate(){
@@ -115,31 +115,46 @@ document.querySelectorAll("input").forEach(i=>i.addEventListener("input",calcula
 async function onDateChange(){
   if(!date.value) return;
 
-  // previous saving
-  const p = await (await fetch(SCRIPT_URL+"?prevOf="+date.value)).json();
+  const requestId = ++activeRequest; // 🔒 LOCK
+
+  /* ===== PREVIOUS SAVING ===== */
+  const p = await (await fetch(
+    SCRIPT_URL + "?prevOf=" + date.value
+  )).json();
+
+  // agar ye latest request nahi hai → ignore
+  if(requestId !== activeRequest) return;
+
   prevCashInput.value = p.currentCash || 0;
   prevOnlineInput.value = p.currentOnline || 0;
-  prevTotal.innerText = num(prevCashInput.value)+num(prevOnlineInput.value);
+  prevTotal.innerText =
+    num(prevCashInput.value) + num(prevOnlineInput.value);
 
-  // existing date data
- const d = await (await fetch(SCRIPT_URL+"?date="+date.value)).json();
+  /* ===== SAME DATE DATA ===== */
+  const d = await (await fetch(
+    SCRIPT_URL + "?date=" + date.value
+  )).json();
 
-if(d.status!=="NOT_FOUND"){
-  Object.keys(d).forEach(k=>{
-    const el=document.getElementById(k);
-    if(el) el.value=d[k];
-  });
-  msg.innerText="Existing entry loaded (Edit mode)";
-} else {
-  // ❗ sirf TODAY ke inputs clear honge
-  document.querySelectorAll(
-    ".invCash, .invOnline, #SellCash, #SellOnline, #BiryaniMade, #FriedMade, #BiryaniLeft, #FriedLeft"
-  ).forEach(i => i.value = "");
+  if(requestId !== activeRequest) return;
 
-  msg.innerText="New entry";
+  if(d.status !== "NOT_FOUND"){
+    Object.keys(d).forEach(k=>{
+      const el = document.getElementById(k);
+      if(el) el.value = d[k];
+    });
+    msg.innerText = "Existing entry loaded (Edit mode)";
+  } else {
+    // ❗ sirf TODAY ke inputs clear honge
+    document.querySelectorAll(
+      ".invCash, .invOnline, #SellCash, #SellOnline, #BiryaniMade, #FriedMade, #BiryaniLeft, #FriedLeft"
+    ).forEach(i => i.value = "");
+
+    msg.innerText = "New entry";
+  }
+
+  calculate();
 }
 
-calculate();
 
 }
 
@@ -169,6 +184,7 @@ function saveDay(){
 
 </body>
 </html>
+
 
 
 
