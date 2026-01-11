@@ -201,6 +201,31 @@ async function onDateChange(){
     ).forEach(i => i.value = "");
     msg.innerText = "New entry";
   }
+  /* ===== LAST WEEK SAME DAY INFO ===== */
+const w = await (await fetch(
+  SCRIPT_URL + "?lastWeekOf=" + date.value
+)).json();
+
+if (w.status !== "NOT_FOUND") {
+  weeklyInfo.innerHTML = `
+    <b>Last week (${w.date})</b><br><br>
+
+    🍚 <b>Biryani</b><br>
+    Made: ${w.biryaniMade} kg<br>
+    Sold: ${w.biryaniSold} kg<br>
+    Remaining: ${w.biryaniLeft} kg<br><br>
+
+    🍗 <b>Fried</b><br>
+    Made: ${w.friedMade} kg<br>
+    Sold: ${w.friedSold} kg<br>
+    Remaining: ${w.friedLeft} kg<br><br>
+
+    💰 <b>Total Sell:</b> ₹${w.sell}
+  `;
+} else {
+  weeklyInfo.innerText = "Last week ka data nahi mila";
+}
+
 
   hideLoader();
   setInputsDisabled(false);
@@ -256,6 +281,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
