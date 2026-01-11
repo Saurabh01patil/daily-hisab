@@ -208,11 +208,20 @@ function saveDay(){
     CurrentTotal:CurrentTotal.innerText
   };
 
-  fetch(SCRIPT_URL,{
-    method:"POST",
-    mode:"no-cors",
-    body: JSON.stringify(data)
-  });
+ fetch(SCRIPT_URL,{
+  method:"POST",
+  headers:{ "Content-Type":"application/json" },
+  body: JSON.stringify(data)
+})
+.then(r => r.json())
+.then(res => {
+  msg.innerText = res.status + " ✔";
+})
+.catch(err=>{
+  msg.innerText = "Error ❌";
+  console.error(err);
+});
+
 
   msg.innerText = "Saved ✔ (Sheet me check karo)";
 }
