@@ -79,6 +79,9 @@ Sell Online: <input id="SellOnline">
 Cash ₹ <span id="CurrentCash">0</span><br>
 Online ₹ <span id="CurrentOnline">0</span><br>
 <p class="total">Total ₹ <span id="CurrentTotal">0</span></p>
+<p id="loader" style="display:none;color:#555;font-weight:bold">
+  ⏳ Loading data...
+</p>
 
 <button onclick="saveDay()">Save / Update Day</button>
 <p id="msg"></p>
@@ -89,6 +92,12 @@ Online ₹ <span id="CurrentOnline">0</span><br>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aqSyRrVVrAEEGFRj9RxRrCq66nzaNdoSl96xbyxPXzZGeyUXG0g/exec";
 let activeRequest = 0; 
 function num(v){ return Number(v)||0; }
+function setInputsDisabled(disabled){
+  document.querySelectorAll(
+    ".invCash, .invOnline, #SellCash, #SellOnline, #BiryaniMade, #FriedMade, #BiryaniLeft, #FriedLeft"
+  ).forEach(i => i.disabled = disabled);
+}
+
 
 function calculate(){
   let invCash=0, invOnline=0;
@@ -115,14 +124,20 @@ document.querySelectorAll("input").forEach(i=>i.addEventListener("input",calcula
 async function onDateChange(){
   if(!date.value) return;
 
-  const requestId = ++activeRequest; // 🔒 LOCK
+  const requestId = ++activeRequest;
+
+  // 🔒 date select hote hi inputs enable
+  setInputsDisabled(false);
+
+  // 🔄 loader show
+  loader.style.display = "block";
+  msg.innerText = "";
 
   /* ===== PREVIOUS SAVING ===== */
   const p = await (await fetch(
     SCRIPT_URL + "?prevOf=" + date.value
   )).json();
 
-  // agar ye latest request nahi hai → ignore
   if(requestId !== activeRequest) return;
 
   prevCashInput.value = p.currentCash || 0;
@@ -144,7 +159,6 @@ async function onDateChange(){
     });
     msg.innerText = "Existing entry loaded (Edit mode)";
   } else {
-    // ❗ sirf TODAY ke inputs clear honge
     document.querySelectorAll(
       ".invCash, .invOnline, #SellCash, #SellOnline, #BiryaniMade, #FriedMade, #BiryaniLeft, #FriedLeft"
     ).forEach(i => i.value = "");
@@ -152,8 +166,12 @@ async function onDateChange(){
     msg.innerText = "New entry";
   }
 
+  // ❌ loader hide
+  loader.style.display = "none";
+
   calculate();
 }
+
 
 date.addEventListener("change",onDateChange);
   
@@ -177,10 +195,13 @@ function saveDay(){
   })
   .then(()=>msg.innerText="Saved ✔");
 }
+  setInputsDisabled(true);
+
 </script>
 
 </body>
 </html>
+
 
 
 
