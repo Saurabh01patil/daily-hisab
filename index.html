@@ -136,6 +136,7 @@ prevTotal.innerText =
   Number(prevCashInput.value) + Number(prevOnlineInput.value);
 
 
+
   // 2️⃣ SAME DATE data
   const dayRes = await fetch(SCRIPT_URL + "?date=" + date.value);
   const d = await dayRes.json();
@@ -254,6 +255,7 @@ fetch(SCRIPT_URL, {
 </html>
 
  
+
 
 
 
