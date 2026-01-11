@@ -119,7 +119,7 @@ async function onDateChange(){
   if(!date.value) return;
 
   // 1️⃣ PREVIOUS DAY saving
-  const prevRes = await fetch(SCRIPT_URL + "?prevOf=" + date.value);
+  const prevRes = awaitfetch(SCRIPT_URL + "?prevOf=" + date.value);
   const p = await prevRes.json();
 
 prevCashInput.value =
@@ -255,6 +255,7 @@ fetch(SCRIPT_URL, {
 </html>
 
  
+
 
 
 
