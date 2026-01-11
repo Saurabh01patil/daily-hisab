@@ -208,19 +208,22 @@ function saveDay(){
     CurrentTotal:CurrentTotal.innerText
   };
 
- fetch(SCRIPT_URL,{
-  method:"POST",
-  headers:{ "Content-Type":"application/json" },
+fetch(SCRIPT_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "text/plain;charset=utf-8"
+  },
   body: JSON.stringify(data)
 })
-.then(r => r.json())
+.then(r => r.text())
 .then(res => {
-  msg.innerText = res.status + " ✔";
+  msg.innerText = "Saved ✔";
 })
-.catch(err=>{
+.catch(err => {
   msg.innerText = "Error ❌";
   console.error(err);
 });
+
 
 
   msg.innerText = "Saved ✔ (Sheet me check karo)";
@@ -233,5 +236,6 @@ function saveDay(){
 </html>
 
  
+
 
 
