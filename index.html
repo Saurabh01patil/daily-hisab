@@ -124,21 +124,25 @@ async function onDateChange(){
 
   prevCashInput.value = p.currentCash || 0;
   prevOnlineInput.value = p.currentOnline || 0;
+  prevTotal.innerText =
+    Number(prevCashInput.value) + Number(prevOnlineInput.value);
 
   // 2️⃣ SAME DATE data
   const dayRes = await fetch(SCRIPT_URL + "?date=" + date.value);
   const d = await dayRes.json();
 
   if(d.status !== "NOT_FOUND"){
-    // Existing entry → fill form
+    date.value = d.Date; // 🔥 important
+
     Object.keys(d).forEach(k=>{
-      if(document.getElementById(k)){
-        document.getElementById(k).value = d[k];
+      const el = document.getElementById(k);
+      if(el){
+        el.value = d[k];
       }
     });
+
     msg.innerText = "Existing entry loaded (Edit mode)";
   } else {
-    // New date → clear ONLY day inputs (not previous saving)
     document.querySelectorAll(
       ".invCash, .invOnline, #SellCash, #SellOnline, #BiryaniMade, #FriedMade, #BiryaniLeft, #FriedLeft"
     ).forEach(i => i.value = "");
@@ -241,6 +245,7 @@ fetch(SCRIPT_URL, {
 </html>
 
  
+
 
 
 
