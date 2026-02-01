@@ -359,6 +359,8 @@ data.CurrentCash=CurrentCash.innerText;
 data.CurrentOnline=CurrentOnline.innerText;
 data.CurrentTotal=CurrentTotal.innerText;
 data.SellTotal=SellTotal.innerText;
+  data.InvestmentCashTotal = invCashTotal.innerText;
+data.InvestmentOnlineTotal = invOnlineTotal.innerText;
 await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify(data)});
 msg.innerText="Saved ✔";
 hideLoader();setInputsDisabled(false);
@@ -371,6 +373,7 @@ window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsD
 
 </body>
 </html>
+
 
 
 
