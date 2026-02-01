@@ -205,10 +205,32 @@ prevTotal.innerText=pc+po;
 
 document.querySelectorAll(".invCash,.invOnline,#SellCash,#SellOnline,#BiryaniMade,#FriedMade,#BiryaniLeft,#FriedLeft")
 .forEach(i=>i.addEventListener("input",calculate));
+function clearDayInputs(){
+  // 🔹 sirf editable inputs clear honge
+  document.querySelectorAll("input").forEach(i=>{
+    if(
+      i.type !== "date" &&        // date input safe
+      !i.hasAttribute("readonly") // previous saving safe
+    ){
+      i.value = "";
+    }
+  });
+
+  // 🔹 totals reset
+  invCashTotal.innerText = 0;
+  invOnlineTotal.innerText = 0;
+  SellTotal.innerText = 0;
+  CurrentCash.innerText = 0;
+  CurrentOnline.innerText = 0;
+  CurrentTotal.innerText = 0;
+
+  // 🔹 weekly info reset
+  weeklyInfo.innerText = "–";
+}
 
 async function onDateChange(){
 if(!date.value)return;
-
+ clearDayInputs(); 
 const id=++activeRequest;
 setInputsDisabled(true);showLoader("Loading data...");
 const p=await(await fetch(SCRIPT_URL+"?prevOf="+date.value)).json();
@@ -246,5 +268,6 @@ window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsD
 
 </body>
 </html>
+
 
 
