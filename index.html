@@ -78,9 +78,15 @@ input{
 }
 
 /* BUTTON */
+/* STICKY SAVE BUTTON – FIXED */
 .sticky-save{
+  position:sticky;
+  bottom:0;
+  background:#faf9f7;
+  padding:16px 20px;
   display:flex;
   justify-content:center;
+  z-index:100;
 }
 
 .sticky-save button{
@@ -427,6 +433,7 @@ window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsD
 
 </body>
 </html>
+
 
 
 
