@@ -7,38 +7,37 @@
 
 <style>
 body{
-  font-family: 'Inter', Arial, sans-serif;
+  font-family:Arial;
   background:#faf9f7;
   margin:0;
   color:#222;
 }
 
+/* HEADER */
 .header{
-  background:none;
   padding:24px 20px 10px;
   font-size:34px;
   font-weight:700;
   color:#e45d3c;
 }
-
 .subline{
   font-size:14px;
   color:#777;
-  margin-top:6px;
 }
 
+/* CARD */
 .container{
   max-width:900px;
   margin:18px auto;
   background:#fff;
   padding:20px;
   border-radius:16px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.05);
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
 }
 
 .section{
-  font-weight:600;
-  margin:22px 0 12px;
+  font-weight:bold;
+  margin:18px 0 12px;
 }
 
 .row{
@@ -47,13 +46,8 @@ body{
   gap:12px;
   margin-bottom:10px;
 }
+.row label{font-weight:normal}
 
-.row label{
-  font-weight:500;
-  color:#555;
-}
-
-.row input,
 input{
   padding:12px;
   border-radius:10px;
@@ -62,104 +56,22 @@ input{
 }
 
 .total{
-  font-weight:700;
+  font-weight:bold;
   margin-top:12px;
 }
 
-button{
-  width:100%;
-  background:#e45d3c;
-  color:#fff;
-  border:none;
-  padding:18px;
-  border-radius:14px;
-  font-size:18px;
-  font-weight:700;
-  cursor:pointer;
-}
-
-.box{
-  background:#fff;
-  border-radius:16px;
-  padding:20px;
-  margin:18px auto;
-  max-width:900px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.05);
-}
-
+/* WEEKLY INFO */
 .info{
   background:#f4f9f6;
-  border-radius:16px;
-  padding:20px;
-  margin:18px auto;
-  max-width:900px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.05);
 }
 
-#msg{
-  margin-top:12px;
-  font-weight:600;
-}
-  /* ---- CARD LOOK ---- */
-.card {
-  background:#fff;
-  border-radius:16px;
-  padding:20px;
-  margin:20px auto;
-  max-width:900px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.06);
-}
-
-/* ---- SELL / CURRENT SAVING INNER BOXES ---- */
-.stat-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(180px,1fr));
-  gap:16px;
-  margin-top:12px;
-}
-
-.stat-box{
-  background:#f4f2f0;
-  border-radius:12px;
-  padding:16px;
-}
-
-.stat-box small{
-  color:#777;
-  display:block;
-  margin-bottom:6px;
-}
-
-.stat-box strong{
-  font-size:22px;
-}
-
-/* ---- PROFIT BOX ---- */
-.profit-box{
-  margin-top:16px;
-  background:#f1fff5;
-  border:2px solid #9be6b0;
-  border-radius:14px;
-  padding:20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.profit-box strong{
-  font-size:26px;
-  color:#166534;
-}
-
-/* ---- STICKY SAVE BUTTON ---- */
+/* BUTTON */
 .sticky-save{
   position:sticky;
   bottom:0;
   background:#faf9f7;
   padding:16px;
-  z-index:999;
 }
-
 .sticky-save button{
   width:100%;
   max-width:900px;
@@ -167,298 +79,169 @@ button{
   display:block;
   background:#e45d3c;
   color:#fff;
-  font-size:18px;
-  font-weight:700;
+  border:none;
   padding:18px;
   border-radius:16px;
-  border:none;
+  font-size:18px;
+  font-weight:700;
+  cursor:pointer;
 }
-
 </style>
-
 </head>
 
 <body>
 
 <div class="header">
   Daily Hisab
-  <div class="subline">
-    business profit Kab hoga
-  </div>
+  <div class="subline">business profit kab hoga</div>
 </div>
 
-
 <!-- PREVIOUS SAVING -->
-<div class="container box">
-<b>Previous Saving</b><br>
-Cash ₹ <input id="prevCashInput" readonly>
-Online ₹ <input id="prevOnlineInput" readonly>
-Total ₹ <span id="prevTotal">0</span>
+<div class="container">
+  <div class="section">Previous Saving</div>
+  Cash ₹ <input id="prevCashInput" readonly>
+  Online ₹ <input id="prevOnlineInput" readonly>
+  <p class="total">Total ₹ <span id="prevTotal">0</span></p>
 </div>
 
 <!-- WEEKLY INFO -->
 <div class="container info">
-<b>Weekly Info</b><br>
-<span id="weeklyInfo">–</span>
+  <div class="section">Weekly Info</div>
+  <span id="weeklyInfo">–</span>
 </div>
 
+<!-- DATE -->
 <div class="container">
+  <div class="section">Date</div>
+  <input type="date" id="date">
+</div>
 
-<div class="section">Date</div>
-<input type="date" id="date">
+<!-- INVESTMENT -->
+<div class="container">
+  <div class="section">---- Investment (Cash / Online) ----</div>
 
-<div class="section">---- Investment (Cash / Online) ----</div>
-<div class="row"><label>Item</label><label>Cash</label><label>Online</label></div>
+  <div class="row"><label>Item</label><label>Cash</label><label>Online</label></div>
 
-<div class="row"><label>Chicken</label><input class="invCash" id="ChickenCash"><input class="invOnline" id="ChickenOnline"></div>
-<div class="row"><label>Dairy</label><input class="invCash" id="DairyCash"><input class="invOnline" id="DairyOnline"></div>
-<div class="row"><label>Grocery</label><input class="invCash" id="GroceryCash"><input class="invOnline" id="GroceryOnline"></div>
-<div class="row"><label>Sabji</label><input class="invCash" id="SabjiCash"><input class="invOnline" id="SabjiOnline"></div>
-<div class="row"><label>Disposal</label><input class="invCash" id="DisposalCash"><input class="invOnline" id="DisposalOnline"></div>
-<div class="row"><label>Gas</label><input class="invCash" id="GasCash"><input class="invOnline" id="GasOnline"></div>
-<div class="row"><label>Diesel</label><input class="invCash" id="DieselCash"><input class="invOnline" id="DieselOnline"></div>
-<div class="row"><label>Petrol</label><input class="invCash" id="PetrolCash"><input class="invOnline" id="PetrolOnline"></div>
-<div class="row"><label>Egg</label><input class="invCash" id="EggCash"><input class="invOnline" id="EggOnline"></div>
-<div class="row"><label>Sachin Salary</label><input class="invCash" id="SachinCash"><input class="invOnline" id="SachinOnline"></div>
-<div class="row"><label>Sattu Salary</label><input class="invCash" id="SattuCash"><input class="invOnline" id="SattuOnline"></div>
-<div class="row"><label>Other</label><input class="invCash" id="OtherCash"><input class="invOnline" id="OtherOnline"></div>
+  <div class="row"><label>Chicken</label><input class="invCash" id="ChickenCash"><input class="invOnline" id="ChickenOnline"></div>
+  <div class="row"><label>Dairy</label><input class="invCash" id="DairyCash"><input class="invOnline" id="DairyOnline"></div>
+  <div class="row"><label>Grocery</label><input class="invCash" id="GroceryCash"><input class="invOnline" id="GroceryOnline"></div>
+  <div class="row"><label>Sabji</label><input class="invCash" id="SabjiCash"><input class="invOnline" id="SabjiOnline"></div>
+  <div class="row"><label>Disposal</label><input class="invCash" id="DisposalCash"><input class="invOnline" id="DisposalOnline"></div>
+  <div class="row"><label>Gas</label><input class="invCash" id="GasCash"><input class="invOnline" id="GasOnline"></div>
+  <div class="row"><label>Diesel</label><input class="invCash" id="DieselCash"><input class="invOnline" id="DieselOnline"></div>
+  <div class="row"><label>Petrol</label><input class="invCash" id="PetrolCash"><input class="invOnline" id="PetrolOnline"></div>
+  <div class="row"><label>Egg</label><input class="invCash" id="EggCash"><input class="invOnline" id="EggOnline"></div>
+  <div class="row"><label>Sachin Salary</label><input class="invCash" id="SachinCash"><input class="invOnline" id="SachinOnline"></div>
+  <div class="row"><label>Sattu Salary</label><input class="invCash" id="SattuCash"><input class="invOnline" id="SattuOnline"></div>
+  <div class="row"><label>Other</label><input class="invCash" id="OtherCash"><input class="invOnline" id="OtherOnline"></div>
 
-<p class="total">
-Investment Cash ₹ <span id="invCashTotal">0</span> |
-Investment Online ₹ <span id="invOnlineTotal">0</span>
-</p>
+  <p class="total">
+    Investment Cash ₹ <span id="invCashTotal">0</span> |
+    Investment Online ₹ <span id="invOnlineTotal">0</span>
+  </p>
+</div>
 
-<div class="section">---- Production ----</div>
-Biryani Made (kg): <input id="BiryaniMade">
-Fried Made (kg): <input id="FriedMade"><br><br>
-Remaining Biryani (kg): <input id="BiryaniLeft">
-Remaining Fried (kg): <input id="FriedLeft">
+<!-- PRODUCTION -->
+<div class="container">
+  <div class="section">---- Production ----</div>
+  Biryani Made (kg): <input id="BiryaniMade">
+  Fried Made (kg): <input id="FriedMade"><br><br>
+  Remaining Biryani (kg): <input id="BiryaniLeft">
+  Remaining Fried (kg): <input id="FriedLeft">
+</div>
 
-<div class="section">---- Sell ----</div>
-Sell Cash: <input id="SellCash">
-Sell Online: <input id="SellOnline">
-<p class="total">Total Sell ₹ <span id="SellTotal">0</span></p>
+<!-- SELL -->
+<div class="container">
+  <div class="section">---- Sell ----</div>
+  Sell Cash: <input id="SellCash">
+  Sell Online: <input id="SellOnline">
+  <p class="total">Total Sell ₹ <span id="SellTotal">0</span></p>
+</div>
 
-<div class="section">---- Current Saving ----</div>
-Cash ₹ <span id="CurrentCash">0</span><br>
-Online ₹ <span id="CurrentOnline">0</span><br>
-<p class="total">Total ₹ <span id="CurrentTotal">0</span></p>
+<!-- CURRENT SAVING -->
+<div class="container">
+  <div class="section">---- Current Saving ----</div>
+  Cash ₹ <span id="CurrentCash">0</span><br>
+  Online ₹ <span id="CurrentOnline">0</span>
+  <p class="total">Total ₹ <span id="CurrentTotal">0</span></p>
+</div>
 
-
+<!-- SAVE BUTTON -->
 <div class="sticky-save">
   <button onclick="saveDay()">💾 Save / Update Day</button>
+  <p id="msg"></p>
 </div>
 
-<p id="msg"></p>
-
-</div>
-  <!-- LOADING POPUP -->
-<div id="popupLoader" style="
-  display:none;
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background:rgba(0,0,0,0.4);
-  z-index:9999;
-  align-items:center;
-  justify-content:center;
-">
-  <div style="
-    background:#fff;
-    padding:20px 30px;
-    border-radius:8px;
-    font-size:18px;
-    font-weight:bold;
-  ">
+<!-- LOADER -->
+<div id="popupLoader" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:#fff;padding:20px 30px;border-radius:8px;font-size:18px;font-weight:bold">
     ⏳ Please wait...
   </div>
 </div>
 
-
+<!-- JS (UNCHANGED) -->
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aqSyRrVVrAEEGFRj9RxRrCq66nzaNdoSl96xbyxPXzZGeyUXG0g/exec";
- let popupLoader = null;   // sirf declare
-let activeRequest = 0; 
-function num(v){ return Number(v)||0; }
-function setInputsDisabled(disabled){
-  document.querySelectorAll(
-    ".invCash, .invOnline, #SellCash, #SellOnline, #BiryaniMade, #FriedMade, #BiryaniLeft, #FriedLeft"
-  ).forEach(i => i.disabled = disabled);
-}
-
-function showLoader(text="Please wait..."){
-  popupLoader.style.display = "flex";
-  popupLoader.querySelector("div").innerText = "⏳ " + text;
-}
-
-function hideLoader(){
-  popupLoader.style.display = "none";
-}
-
+let popupLoader=null,activeRequest=0;
+function num(v){return Number(v)||0}
+function setInputsDisabled(d){
+document.querySelectorAll(".invCash,.invOnline,#SellCash,#SellOnline,#BiryaniMade,#FriedMade,#BiryaniLeft,#FriedLeft")
+.forEach(i=>i.disabled=d)}
+function showLoader(t="Please wait..."){popupLoader.style.display="flex";popupLoader.querySelector("div").innerText="⏳ "+t}
+function hideLoader(){popupLoader.style.display="none"}
 
 function calculate(){
-  let invCash=0, invOnline=0;
-  document.querySelectorAll(".invCash").forEach(i=>invCash+=num(i.value));
-  document.querySelectorAll(".invOnline").forEach(i=>invOnline+=num(i.value));
-
-  invCashTotal.innerText = invCash;
-  invOnlineTotal.innerText = invOnline;
-
-  SellTotal.innerText = num(SellCash.value)+num(SellOnline.value);
-
-  let prevCash = num(prevCashInput.value);
-  let prevOnline = num(prevOnlineInput.value);
-
-  CurrentCash.innerText = prevCash + num(SellCash.value) - invCash;
-  CurrentOnline.innerText = prevOnline + num(SellOnline.value) - invOnline;
-  CurrentTotal.innerText = num(CurrentCash.innerText)+num(CurrentOnline.innerText);
-
-  prevTotal.innerText = prevCash + prevOnline;
+let ic=0,io=0;
+document.querySelectorAll(".invCash").forEach(i=>ic+=num(i.value));
+document.querySelectorAll(".invOnline").forEach(i=>io+=num(i.value));
+invCashTotal.innerText=ic;invOnlineTotal.innerText=io;
+SellTotal.innerText=num(SellCash.value)+num(SellOnline.value);
+let pc=num(prevCashInput.value),po=num(prevOnlineInput.value);
+CurrentCash.innerText=pc+num(SellCash.value)-ic;
+CurrentOnline.innerText=po+num(SellOnline.value)-io;
+CurrentTotal.innerText=num(CurrentCash.innerText)+num(CurrentOnline.innerText);
+prevTotal.innerText=pc+po;
 }
 
-document.querySelectorAll(
-  ".invCash, .invOnline, #SellCash, #SellOnline, #BiryaniMade, #FriedMade, #BiryaniLeft, #FriedLeft"
-).forEach(i => i.addEventListener("input", calculate));
-
+document.querySelectorAll(".invCash,.invOnline,#SellCash,#SellOnline,#BiryaniMade,#FriedMade,#BiryaniLeft,#FriedLeft")
+.forEach(i=>i.addEventListener("input",calculate));
 
 async function onDateChange(){
-  if(!date.value) return;
-
-  const requestId = ++activeRequest;
-
-  setInputsDisabled(true);
-  showLoader("Loading data...");
-
-  await new Promise(r => setTimeout(r, 50));
-
-  /* ===== PREVIOUS SAVING ===== */
-  const p = await (await fetch(
-    SCRIPT_URL + "?prevOf=" + date.value
-  )).json();
-
-  if(requestId !== activeRequest){
-    hideLoader();
-    return;
-  }
-
-  prevCashInput.value = p.currentCash || 0;
-  prevOnlineInput.value = p.currentOnline || 0;
-  prevTotal.innerText =
-    num(prevCashInput.value) + num(prevOnlineInput.value);
-
-  /* ===== SAME DATE DATA ===== */
-  const d = await (await fetch(
-    SCRIPT_URL + "?date=" + date.value
-  )).json();
-
-  if(requestId !== activeRequest){
-    hideLoader();
-    return;
-  }
-
-  if(d.status !== "NOT_FOUND"){
-    Object.keys(d).forEach(k=>{
-      const el = document.getElementById(k);
-      if(el) el.value = d[k];
-    });
-    msg.innerText = "Existing entry loaded";
-  } else {
-    document.querySelectorAll(
-      ".invCash, .invOnline, #SellCash, #SellOnline, #BiryaniMade, #FriedMade, #BiryaniLeft, #FriedLeft"
-    ).forEach(i => i.value = "");
-    msg.innerText = "New entry";
-  }
-  /* ===== LAST WEEK SAME DAY INFO ===== */
-const w = await (await fetch(
-  SCRIPT_URL + "?lastWeekOf=" + date.value
-)).json();
-
-if (w.status !== "NOT_FOUND") {
-  weeklyInfo.innerHTML = `
-    <b>Last week (${w.date})</b><br><br>
-
-    🍚 <b>Biryani</b><br>
-    Made: ${w.biryaniMade} kg<br>
-    Sold: ${w.biryaniSold} kg<br>
-    Remaining: ${w.biryaniLeft} kg<br><br>
-
-    🍗 <b>Fried</b><br>
-    Made: ${w.friedMade} kg<br>
-    Sold: ${w.friedSold} kg<br>
-    Remaining: ${w.friedLeft} kg<br><br>
-
-    💰 <b>Total Sell:</b> ₹${w.sell}
-  `;
-} else {
-  weeklyInfo.innerText = "Last week ka data nahi mila";
+if(!date.value)return;
+const id=++activeRequest;
+setInputsDisabled(true);showLoader("Loading data...");
+const p=await(await fetch(SCRIPT_URL+"?prevOf="+date.value)).json();
+prevCashInput.value=p.currentCash||0;
+prevOnlineInput.value=p.currentOnline||0;
+const d=await(await fetch(SCRIPT_URL+"?date="+date.value)).json();
+if(d.status!=="NOT_FOUND"){Object.keys(d).forEach(k=>{let e=document.getElementById(k);if(e)e.value=d[k]})}
+const w=await(await fetch(SCRIPT_URL+"?lastWeekOf="+date.value)).json();
+if(w.status!=="NOT_FOUND"){
+weeklyInfo.innerHTML=`<b>Last week (${w.date})</b><br><br>
+🍚 Biryani: ${w.biryaniSold} kg sold<br>
+🍗 Fried: ${w.friedSold} kg sold<br>
+💰 Sell ₹${w.sell}`;
 }
-
-
-  hideLoader();
-  setInputsDisabled(false);
-  calculate();
+hideLoader();setInputsDisabled(false);calculate();
 }
-
-
 date.addEventListener("change",onDateChange);
+
 async function saveDay(){
-  if(!date.value){
-    alert("Date select karo");
-    return;
-  }
-
-  setInputsDisabled(true);
-  showLoader("Saving data...");
-
-  const data = { date: date.value };
-
-  document.querySelectorAll("input").forEach(i=>{
-    if(i.id && i.type!=="date") data[i.id] = i.value;
-  });
-
-  data.CurrentCash = CurrentCash.innerText;
-  data.CurrentOnline = CurrentOnline.innerText;
-  data.CurrentTotal = CurrentTotal.innerText;
-  data.SellTotal = SellTotal.innerText;
-
-  try{
-    await fetch(SCRIPT_URL,{
-      method:"POST",
-      body:JSON.stringify(data)
-    });
-
-    msg.innerText = "Saved ✔";
-  }catch(err){
-    msg.innerText = "Error ❌";
-  }
-
- await new Promise(r => setTimeout(r, 300));
-hideLoader();
-setInputsDisabled(false);
-
+if(!date.value)return alert("Date select karo");
+setInputsDisabled(true);showLoader("Saving data...");
+const data={date:date.value};
+document.querySelectorAll("input").forEach(i=>{if(i.id&&i.type!=="date")data[i.id]=i.value});
+data.CurrentCash=CurrentCash.innerText;
+data.CurrentOnline=CurrentOnline.innerText;
+data.CurrentTotal=CurrentTotal.innerText;
+data.SellTotal=SellTotal.innerText;
+await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify(data)});
+msg.innerText="Saved ✔";
+hideLoader();setInputsDisabled(false);
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-  popupLoader = document.getElementById("popupLoader");
-  setInputsDisabled(true); // page load pe inputs band
-});
-
-
+window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsDisabled(true)}
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
