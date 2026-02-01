@@ -151,6 +151,16 @@ input{
     border-radius:14px;
   }
 }
+.history-btn{
+  float:right;
+  background:#144d3d;
+  color:#fff;
+  border:none;
+  padding:10px 18px;
+  border-radius:20px;
+  font-weight:600;
+  cursor:pointer;
+}
 
 </style>
 </head>
@@ -160,6 +170,10 @@ input{
 <div class="header">
   Daily Hisab
   <div class="subline">business profit kab hoga</div>
+  <button onclick="goToHistory()" class="history-btn">
+  ⏱ History
+</button>
+
 </div>
 
 <!-- PREVIOUS SAVING -->
@@ -334,6 +348,7 @@ window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsD
 
 </body>
 </html>
+
 
 
 
