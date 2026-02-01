@@ -73,31 +73,64 @@ body{
 </div>
 
 <div class="container">
-  <div style="font-size:50px;">🧮</div>
-  <p id="historyText">Loading...</p>
+
+  <!-- DATE PICKER -->
+  <input type="date" id="historyDate" style="
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #ccc;
+    margin-bottom:16px;
+  ">
+
+  <!-- DATA OUTPUT -->
+  <div id="historyText">
+    Loading...
+  </div>
+
+  <!-- RECENT LIST -->
+  <div id="historyList" style="
+    margin-top:24px;
+    text-align:left;
+  ">
+  </div>
+
 </div>
 
-<button class="back-btn" onclick="goBack()">⬅ Back to Calculator</button>
 
+<button class="back-btn" onclick="goBack()">⬅ Back to Calculator</button>
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aqSyRrVVrAEEGFRj9RxRrCq66nzaNdoSl96xbyxPXzZGeyUXG0g/exec";
 
-// 🔹 aaj ki date (yyyy-mm-dd)
-const today = new Date().toISOString().split("T")[0];
+const historyDate = document.getElementById("historyDate");
+const historyText = document.getElementById("historyText");
+const historyList = document.getElementById("historyList");
+const errorBox = document.getElementById("errorBox");
+
+// default = today
+historyDate.value = new Date().toISOString().split("T")[0];
+
+// listeners
+historyDate.addEventListener("change", loadHistory);
+
+// load on open
+loadHistory();
+loadRecentList();
 
 async function loadHistory(){
+  const d = historyDate.value;
+  historyText.innerHTML = "Loading...";
+
   try{
-    const res = await fetch(SCRIPT_URL + "?date=" + today);
+    const res = await fetch(SCRIPT_URL + "?date=" + d);
     const data = await res.json();
 
     if(data.status === "NOT_FOUND"){
-      historyText.innerText =
-        "No records found. Start by saving your first entry!";
+      historyText.innerHTML = "❌ No records found for this date.";
       return;
     }
 
     historyText.innerHTML = `
-      <b>Date:</b> ${today}<br><br>
+      <b>Date:</b> ${d}<br><br>
       💰 <b>Total Sell:</b> ₹${data.SellTotal || 0}<br>
       💸 <b>Investment Cash:</b> ₹${data.invCashTotal || 0}<br>
       📱 <b>Investment Online:</b> ₹${data.invOnlineTotal || 0}<br><br>
@@ -106,16 +139,41 @@ async function loadHistory(){
       🧮 <b>Total Saving:</b> ₹${data.CurrentTotal || 0}
     `;
   }catch(err){
-    errorBox.style.display="block";
-    historyText.innerText="";
+    errorBox.style.display = "block";
+    historyText.innerHTML = "";
   }
+}
+
+// 🔹 recent history list
+async function loadRecentList(){
+  try{
+    const res = await fetch(SCRIPT_URL + "?history=7");
+    const list = await res.json();
+
+    if(!Array.isArray(list)) return;
+
+    historyList.innerHTML = `
+      <h3>Recent Entries</h3>
+      <ul>
+        ${list.map(d=>`
+          <li style="margin:8px 0;cursor:pointer;color:#144d3d"
+              onclick="selectDate('${d.date}')">
+            ${d.date} → ₹${d.SellTotal}
+          </li>
+        `).join("")}
+      </ul>
+    `;
+  }catch(e){}
+}
+
+function selectDate(d){
+  historyDate.value = d;
+  loadHistory();
 }
 
 function goBack(){
   window.location.href = "index.html";
 }
-
-loadHistory();
 </script>
 
 </body>
