@@ -208,6 +208,9 @@ document.querySelectorAll(".invCash,.invOnline,#SellCash,#SellOnline,#BiryaniMad
 
 async function onDateChange(){
 if(!date.value)return;
+    // 🔴 VERY IMPORTANT: clear old date data immediately
+  clearDayInputs();
+
 const id=++activeRequest;
 setInputsDisabled(true);showLoader("Loading data...");
 const p=await(await fetch(SCRIPT_URL+"?prevOf="+date.value)).json();
@@ -245,3 +248,4 @@ window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsD
 
 </body>
 </html>
+
