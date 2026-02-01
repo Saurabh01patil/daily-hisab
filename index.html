@@ -6,23 +6,113 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{font-family:Arial;background:#f4f6f8;margin:0}
-.header{background:#222;color:#fff;padding:12px 20px;font-size:20px}
-.container{max-width:1000px;margin:15px auto;background:#fff;padding:20px;border-radius:8px}
-.section{font-weight:bold;margin:18px 0 10px}
-.row{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:8px;margin-bottom:6px}
-.row label{font-weight:normal}
-.row input{padding:6px}
-.total{font-weight:bold;margin-top:8px}
-button{background:#222;color:#fff;border:none;padding:8px 14px;border-radius:4px;cursor:pointer}
-.box{background:#f1f1f1;padding:10px;border-radius:6px;margin-bottom:10px}
-.info{background:#e8ffe8;padding:10px;border-radius:6px;margin-bottom:10px}
+body{
+  font-family: 'Inter', Arial, sans-serif;
+  background:#faf9f7;
+  margin:0;
+  color:#222;
+}
+
+.header{
+  background:none;
+  padding:24px 20px 10px;
+  font-size:34px;
+  font-weight:700;
+  color:#e45d3c;
+}
+
+.subline{
+  font-size:14px;
+  color:#777;
+  margin-top:6px;
+}
+
+.container{
+  max-width:900px;
+  margin:18px auto;
+  background:#fff;
+  padding:20px;
+  border-radius:16px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.05);
+}
+
+.section{
+  font-weight:600;
+  margin:22px 0 12px;
+}
+
+.row{
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr;
+  gap:12px;
+  margin-bottom:10px;
+}
+
+.row label{
+  font-weight:500;
+  color:#555;
+}
+
+.row input,
+input{
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #e5e5e5;
+  font-size:15px;
+}
+
+.total{
+  font-weight:700;
+  margin-top:12px;
+}
+
+button{
+  width:100%;
+  background:#e45d3c;
+  color:#fff;
+  border:none;
+  padding:18px;
+  border-radius:14px;
+  font-size:18px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.box{
+  background:#fff;
+  border-radius:16px;
+  padding:20px;
+  margin:18px auto;
+  max-width:900px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.05);
+}
+
+.info{
+  background:#f4f9f6;
+  border-radius:16px;
+  padding:20px;
+  margin:18px auto;
+  max-width:900px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.05);
+}
+
+#msg{
+  margin-top:12px;
+  font-weight:600;
+}
 </style>
+
 </head>
 
 <body>
 
-<div class="header">📊 Daily Hisab</div>
+<div class="header">
+  Daily Hisab
+  <div class="subline">
+    business profit Kab hoga
+  </div>
+</div>
+
 
 <!-- PREVIOUS SAVING -->
 <div class="container box">
@@ -281,6 +371,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
