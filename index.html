@@ -269,6 +269,9 @@ document.querySelectorAll(".invCash,.invOnline,#SellCash,#SellOnline,#BiryaniMad
 .forEach(i=>i.disabled=d)}
 function showLoader(t="Please wait..."){popupLoader.style.display="flex";popupLoader.querySelector("div").innerText="⏳ "+t}
 function hideLoader(){popupLoader.style.display="none"}
+function goToHistory(){
+  window.location.href = "history.html";
+}
 
 function calculate(){
 let ic=0,io=0;
@@ -285,6 +288,7 @@ prevTotal.innerText=pc+po;
 
 document.querySelectorAll(".invCash,.invOnline,#SellCash,#SellOnline,#BiryaniMade,#FriedMade,#BiryaniLeft,#FriedLeft")
 .forEach(i=>i.addEventListener("input",calculate));
+  
 function clearDayInputs(){
   // 🔹 sirf editable inputs clear honge
   document.querySelectorAll("input").forEach(i=>{
@@ -348,6 +352,7 @@ window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsD
 
 </body>
 </html>
+
 
 
 
