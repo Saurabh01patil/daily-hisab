@@ -100,6 +100,80 @@ button{
   margin-top:12px;
   font-weight:600;
 }
+  /* ---- CARD LOOK ---- */
+.card {
+  background:#fff;
+  border-radius:16px;
+  padding:20px;
+  margin:20px auto;
+  max-width:900px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+}
+
+/* ---- SELL / CURRENT SAVING INNER BOXES ---- */
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(180px,1fr));
+  gap:16px;
+  margin-top:12px;
+}
+
+.stat-box{
+  background:#f4f2f0;
+  border-radius:12px;
+  padding:16px;
+}
+
+.stat-box small{
+  color:#777;
+  display:block;
+  margin-bottom:6px;
+}
+
+.stat-box strong{
+  font-size:22px;
+}
+
+/* ---- PROFIT BOX ---- */
+.profit-box{
+  margin-top:16px;
+  background:#f1fff5;
+  border:2px solid #9be6b0;
+  border-radius:14px;
+  padding:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.profit-box strong{
+  font-size:26px;
+  color:#166534;
+}
+
+/* ---- STICKY SAVE BUTTON ---- */
+.sticky-save{
+  position:sticky;
+  bottom:0;
+  background:#faf9f7;
+  padding:16px;
+  z-index:999;
+}
+
+.sticky-save button{
+  width:100%;
+  max-width:900px;
+  margin:auto;
+  display:block;
+  background:#e45d3c;
+  color:#fff;
+  font-size:18px;
+  font-weight:700;
+  padding:18px;
+  border-radius:16px;
+  border:none;
+}
+
 </style>
 
 </head>
@@ -171,7 +245,10 @@ Online ₹ <span id="CurrentOnline">0</span><br>
 <p class="total">Total ₹ <span id="CurrentTotal">0</span></p>
 
 
-<button onclick="saveDay()">Save / Update Day</button>
+<div class="sticky-save">
+  <button onclick="saveDay()">💾 Save / Update Day</button>
+</div>
+
 <p id="msg"></p>
 
 </div>
@@ -371,6 +448,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
