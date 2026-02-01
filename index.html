@@ -263,13 +263,24 @@ input{
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aqSyRrVVrAEEGFRj9RxRrCq66nzaNdoSl96xbyxPXzZGeyUXG0g/exec";
 let popupLoader=null,activeRequest=0;
+  let isDirty = false;
+
 function num(v){return Number(v)||0}
 function setInputsDisabled(d){
 document.querySelectorAll(".invCash,.invOnline,#SellCash,#SellOnline,#BiryaniMade,#FriedMade,#BiryaniLeft,#FriedLeft")
 .forEach(i=>i.disabled=d)}
+  document.querySelectorAll("input").forEach(i=>{
+  if(i.type !== "date"){
+    i.addEventListener("input",()=> isDirty = true);
+  }
+});
+
 function showLoader(t="Please wait..."){popupLoader.style.display="flex";popupLoader.querySelector("div").innerText="⏳ "+t}
 function hideLoader(){popupLoader.style.display="none"}
 function goToHistory(){
+  if(isDirty){
+    if(!confirm("Data save nahi hua hai. History par jana hai?")) return;
+  }
   window.location.href = "./history.html";
 }
 
@@ -315,7 +326,11 @@ function clearDayInputs(){
 
 async function onDateChange(){
 if(!date.value)return;
+  if(isDirty){
+  if(!confirm("Data save nahi hua hai. Continue?")) return;
+}
  clearDayInputs(); 
+
 const id=++activeRequest;
 setInputsDisabled(true);showLoader("Loading data...");
 const p=await(await fetch(SCRIPT_URL+"?prevOf="+date.value)).json();
@@ -331,6 +346,7 @@ weeklyInfo.innerHTML=`<b>Last week (${w.date})</b><br><br>
 💰 Sell ₹${w.sell}`;
 }
 hideLoader();setInputsDisabled(false);calculate();
+  isDirty = false; 
 }
 date.addEventListener("change",onDateChange);
 
@@ -346,6 +362,8 @@ data.SellTotal=SellTotal.innerText;
 await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify(data)});
 msg.innerText="Saved ✔";
 hideLoader();setInputsDisabled(false);
+  isDirty = false;
+
 }
 
 window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsDisabled(true)}
@@ -353,6 +371,7 @@ window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsD
 
 </body>
 </html>
+
 
 
 
