@@ -86,6 +86,72 @@ input{
   font-weight:700;
   cursor:pointer;
 }
+  /* =========================
+   MOBILE RESPONSIVE FIX
+   ========================= */
+@media (max-width: 768px){
+
+  body{
+    font-size:14px;
+  }
+
+  .header{
+    font-size:26px;
+    padding:18px 16px 8px;
+  }
+
+  .container{
+    margin:12px;
+    padding:16px;
+    border-radius:14px;
+  }
+
+  /* rows (Item / Cash / Online) -> stack */
+  .row{
+    grid-template-columns:1fr;
+    gap:6px;
+  }
+
+  .row label{
+    font-weight:600;
+    margin-top:8px;
+  }
+
+  /* inputs full width */
+  input{
+    width:100%;
+    box-sizing:border-box;
+  }
+
+  /* Production & Sell inputs spacing */
+  input + input{
+    margin-top:8px;
+  }
+
+  /* totals spacing */
+  .total{
+    margin-top:14px;
+    font-size:15px;
+  }
+
+  /* Weekly info text wrap */
+  #weeklyInfo{
+    line-height:1.6;
+    display:block;
+  }
+
+  /* Sticky save button mobile */
+  .sticky-save{
+    padding:12px;
+  }
+
+  .sticky-save button{
+    padding:16px;
+    font-size:16px;
+    border-radius:14px;
+  }
+}
+
 </style>
 </head>
 
@@ -268,6 +334,7 @@ window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsD
 
 </body>
 </html>
+
 
 
 
