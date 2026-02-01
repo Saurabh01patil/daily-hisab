@@ -270,8 +270,9 @@ document.querySelectorAll(".invCash,.invOnline,#SellCash,#SellOnline,#BiryaniMad
 function showLoader(t="Please wait..."){popupLoader.style.display="flex";popupLoader.querySelector("div").innerText="⏳ "+t}
 function hideLoader(){popupLoader.style.display="none"}
 function goToHistory(){
-  window.location.href = "history.html";
+  window.location.href = "./history.html";
 }
+
 
 function calculate(){
 let ic=0,io=0;
@@ -352,6 +353,7 @@ window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsD
 
 </body>
 </html>
+
 
 
 
