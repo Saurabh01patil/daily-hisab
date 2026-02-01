@@ -15,11 +15,23 @@ body{
 
 /* HEADER */
 .header{
-  padding:24px 20px 10px;
+  padding:24px 20px;
+}
+
+.header-inner{
+  max-width:900px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.title{
   font-size:34px;
   font-weight:700;
   color:#e45d3c;
 }
+
 .subline{
   font-size:14px;
   color:#777;
@@ -70,22 +82,23 @@ input{
   position:sticky;
   bottom:0;
   background:#faf9f7;
-  padding:16px;
+  padding:16px 20px;
 }
+
 .sticky-save button{
-  width:100%;
   max-width:900px;
-  margin:auto;
-  display:block;
-  background:#e45d3c;
-  color:#fff;
-  border:none;
-  padding:18px;
-  border-radius:16px;
-  font-size:18px;
-  font-weight:700;
-  cursor:pointer;
 }
+.date-box{
+  text-align:center;
+}
+
+.date-box input{
+  padding:14px 18px;
+  border-radius:12px;
+  border:1px solid #ddd;
+  font-size:16px;
+}
+
   /* =========================
    MOBILE RESPONSIVE FIX
    ========================= */
@@ -161,6 +174,18 @@ input{
   font-weight:600;
   cursor:pointer;
 }
+  @media(max-width:600px){
+  .header-inner{
+    flex-direction:column;
+    gap:12px;
+    align-items:flex-start;
+  }
+
+  .history-btn{
+    align-self:flex-end;
+  }
+}
+
 
 </style>
 </head>
@@ -168,13 +193,18 @@ input{
 <body>
 
 <div class="header">
-  Daily Hisab
-  <div class="subline">business profit kab hoga</div>
-  <button onclick="goToHistory()" class="history-btn">
-  ⏱ History
-</button>
+  <div class="header-inner">
+    <div>
+      <div class="title">Daily Hisab</div>
+      <div class="subline">business profit kab hoga</div>
+    </div>
 
+    <button onclick="goToHistory()" class="history-btn">
+      ⏱ History
+    </button>
+  </div>
 </div>
+
 
 <!-- PREVIOUS SAVING -->
 <div class="container">
@@ -193,7 +223,9 @@ input{
 <!-- DATE -->
 <div class="container">
   <div class="section">Date</div>
-  <input type="date" id="date">
+  <div class="date-box">
+    <input type="date" id="date">
+  </div>
 </div>
 
 <!-- INVESTMENT -->
@@ -224,10 +256,24 @@ input{
 <!-- PRODUCTION -->
 <div class="container">
   <div class="section">---- Production ----</div>
-  Biryani Made (kg): <input id="BiryaniMade">
-  Fried Made (kg): <input id="FriedMade"><br><br>
-  Remaining Biryani (kg): <input id="BiryaniLeft">
-  Remaining Fried (kg): <input id="FriedLeft">
+ <div class="row">
+  <label>Biryani Made (kg)</label>
+  <input id="BiryaniMade">
+</div>
+
+<div class="row">
+  <label>Fried Made (kg)</label>
+  <input id="FriedMade">
+</div>
+<div class="row">
+  <label>Remaining Biryani (kg)</label>
+  <input id="BiryaniLeft">
+</div>
+
+<div class="row">
+  <label>Remaining Fried (kg)</label>
+  <input id="FriedLeft">
+</div>
 </div>
 
 <!-- SELL -->
@@ -373,6 +419,7 @@ window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsD
 
 </body>
 </html>
+
 
 
 
