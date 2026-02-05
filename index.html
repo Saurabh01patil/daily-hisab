@@ -322,6 +322,13 @@ input{
 <!-- JS (UNCHANGED) -->
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aqSyRrVVrAEEGFRj9RxRrCq66nzaNdoSl96xbyxPXzZGeyUXG0g/exec";
+  function getWhatsappMessage(date) {
+  return `✅ Daily Hisab Saved
+📅 Date: ${date}
+⏰ Time: ${new Date().toLocaleTimeString()}
+(Team ke liye update)`;
+}
+
 let popupLoader=null,activeRequest=0;
   let isDirty = false;
 
@@ -425,6 +432,12 @@ await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify(data)});
 msg.innerText="Saved ✔";
 hideLoader();setInputsDisabled(false);
   isDirty = false;
+  // 🔔 WhatsApp notification (manual send)
+const waMsg = getWhatsappMessage(date.value);
+const waUrl = "https://wa.me/?text=" + encodeURIComponent(waMsg);
+window.open(waUrl, "_blank");
+
+
 
 }
 
@@ -433,6 +446,7 @@ window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsD
 
 </body>
 </html>
+
 
 
 
