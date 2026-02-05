@@ -384,8 +384,7 @@ document.querySelectorAll(".invCash,.invOnline,#SellCash,#SellOnline,#BiryaniMad
   }
 });
 
-function showLoader(t="Please wait..."){popupLoader.style.display="flex";popupLoader.querySelector("div").innerText="⏳ "+t}
-function hideLoader(){popupLoader.style.display="none"}
+
 function goToHistory(){
   if(isDirty){
     if(!confirm("Data save nahi hua hai. History par jana hai?")) return;
@@ -441,7 +440,8 @@ if(!date.value)return;
  clearDayInputs(); 
 
 const id=++activeRequest;
-setInputsDisabled(true);showLoader("Loading data...");
+setInputsDisabled(true);
+ showPopup("⏳ Loading data...");
 const p=await(await fetch(SCRIPT_URL+"?prevOf="+date.value)).json();
 prevCashInput.value=p.currentCash||0;
 prevOnlineInput.value=p.currentOnline||0;
@@ -454,7 +454,7 @@ weeklyInfo.innerHTML=`<b>Last week (${w.date})</b><br><br>
 🍗 Fried: ${w.friedSold} kg sold<br>
 💰 Sell ₹${w.sell}`;
 }
-hideLoader();setInputsDisabled(false);calculate();
+popupLoader.style.display = "none";
   isDirty = false; 
 }
 date.addEventListener("change",onDateChange);
@@ -497,6 +497,7 @@ window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsD
 
 </body>
 </html>
+
 
 
 
