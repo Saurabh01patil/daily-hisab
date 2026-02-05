@@ -210,7 +210,7 @@ input{
   <div class="header-inner">
     <div>
       <div class="title">Daily Hisab</div>
-      <div class="subline">business profit kab hoga...</div>
+      <div class="subline">business profit kab hoga</div>
     </div>
 
     <button onclick="goToHistory()" class="history-btn">
@@ -361,10 +361,11 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aq
   function getWhatsappMessage(date) {
   return `✅ Daily Hisab Saved
 📅 Date: ${date}
-(sheet me save ho gaya h)`;
+(sheet me save kr diya h)`;
 }
 waBtn.onclick = () => {
-  const waUrl = "https://web.whatsapp.com/send?text=" + encodeURIComponent(waMessage);
+  //const waUrl = "https://web.whatsapp.com/send?text=" + encodeURIComponent(waMessage);
+  const waUrl = "https://wa.me/?text=" + encodeURIComponent(waMessage);
   window.open(waUrl, "_blank");
 
   popupText.innerText = "⏳ Please wait...";
@@ -508,6 +509,7 @@ window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsD
 
 </body>
 </html>
+
 
 
 
