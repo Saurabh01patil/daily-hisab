@@ -1,340 +1,532 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Daily Hisab</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Daily Hisab</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body{
-      font-family: Arial;
-      background: #faf9f7;
-      margin: 0;
-      color: #222;
-    }
+<style>
+body{
+  font-family:Arial;
+  background:#faf9f7;
+  margin:0;
+  color:#222;
+}
 
-    /* HEADER */
-    .header{
-      padding: 24px 20px;
-    }
+/* HEADER */
+.header{
+  padding:24px 20px;
+}
 
-    .header-inner{
-      max-width: 900px;
-      margin: auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+.header-inner{
+  max-width:900px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    .title{
-      font-size: 34px;
-      font-weight: 700;
-      color: #e45d3c;
-    }
+.title{
+  font-size:34px;
+  font-weight:700;
+  color:#e45d3c;
+}
 
-    .subline{
-      font-size: 14px;
-      color: #777;
-    }
+.subline{
+  font-size:14px;
+  color:#777;
+}
 
-    /* CARD */
-    .container{
-      max-width: 900px;
-      margin: 18px auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-    }
+/* CARD */
+.container{
+  max-width:900px;
+  margin:18px auto;
+  background:#fff;
+  padding:20px;
+  border-radius:16px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+}
 
-    .section{
-      font-weight: bold;
-      margin: 18px 0 12px;
-    }
+.section{
+  font-weight:bold;
+  margin:18px 0 12px;
+}
 
-    .row{
-      display: grid;
-      grid-template-columns: 1.2fr 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
+.row{
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr;
+  gap:12px;
+  margin-bottom:10px;
+}
+.row label{font-weight:normal}
 
-    .row label{
-      font-weight: normal;
-    }
+input{
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #e5e5e5;
+  font-size:15px;
+}
 
-    input{
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #e5e5e5;
-      font-size: 15px;
-    }
+.total{
+  font-weight:bold;
+  margin-top:12px;
+}
 
-    .total{
-      font-weight: bold;
-      margin-top: 12px;
-    }
+/* WEEKLY INFO */
+.info{
+  background:#f4f9f6;
+}
 
-    /* WEEKLY INFO */
-    .info{
-      background: #f4f9f6;
-    }
+/* BUTTON */
+/* STICKY SAVE BUTTON – FIXED */
+.sticky-save{
+  position:sticky;
+  bottom:0;
+  background:#faf9f7;
+  padding:16px 20px;
+  display:flex;
+  justify-content:center;
+  z-index:100;
+}
 
-    /* STICKY SAVE BUTTON */
-    .sticky-save{
-      position: sticky;
-      bottom: 0;
-      background: #faf9f7;
-      padding: 16px 20px;
-      display: flex;
-      justify-content: center;
-      z-index: 100;
-    }
+.sticky-save button{
+  width:100%;
+  max-width:900px;
+    background:#144d3d;
+  color:#fff;
+  border:none;
+  padding:18px;
+  border-radius:16px;
+  font-size:18px;
+  font-weight:700;
+  cursor:pointer;
+}
 
-    .sticky-save button{
-      width: 100%;
-      max-width: 900px;
-      background: #144d3d;
-      color: #fff;
-      border: none;
-      padding: 18px;
-      border-radius: 16px;
-      font-size: 18px;
-      font-weight: 700;
-      cursor: pointer;
-    }
+.date-box{
+  text-align:center;
+}
 
-    .date-box{
-      text-align: center;
-    }
+.date-box input{
+  padding:14px 18px;
+  border-radius:12px;
+  border:1px solid #ddd;
+  font-size:16px;
+}
 
-    .date-box input{
-      padding: 14px 18px;
-      border-radius: 12px;
-      border: 1px solid #ddd;
-      font-size: 16px;
-    }
+  /* =========================
+   MOBILE RESPONSIVE FIX
+   ========================= */
+@media (max-width: 768px){
 
-    @media (max-width: 768px){
-      body{ font-size: 14px; }
+  body{
+    font-size:14px;
+  }
 
-      .header{
-        font-size: 26px;
-        padding: 18px 16px 8px;
-      }
+  .header{
+    font-size:26px;
+    padding:18px 16px 8px;
+  }
 
-      .container{
-        margin: 12px;
-        padding: 16px;
-        border-radius: 14px;
-      }
+  .container{
+    margin:12px;
+    padding:16px;
+    border-radius:14px;
+  }
 
-      .row{
-        grid-template-columns: 1fr;
-        gap: 6px;
-      }
+  /* rows (Item / Cash / Online) -> stack */
+  .row{
+    grid-template-columns:1fr;
+    gap:6px;
+  }
 
-      .row label{
-        font-weight: 600;
-        margin-top: 8px;
-      }
+  .row label{
+    font-weight:600;
+    margin-top:8px;
+  }
 
-      input{
-        width: 100%;
-        box-sizing: border-box;
-      }
+  /* inputs full width */
+  input{
+    width:100%;
+    box-sizing:border-box;
+  }
 
-      .total{
-        margin-top: 14px;
-        font-size: 15px;
-      }
+  /* Production & Sell inputs spacing */
+  input + input{
+    margin-top:8px;
+  }
 
-      #weeklyInfo{
-        line-height: 1.6;
-        display: block;
-      }
+  /* totals spacing */
+  .total{
+    margin-top:14px;
+    font-size:15px;
+  }
 
-      .sticky-save{
-        padding: 12px;
-      }
+  /* Weekly info text wrap */
+  #weeklyInfo{
+    line-height:1.6;
+    display:block;
+  }
 
-      .sticky-save button{
-        padding: 16px;
-        font-size: 16px;
-        border-radius: 14px;
-      }
-    }
+  /* Sticky save button mobile */
+  .sticky-save{
+    padding:12px;
+  }
 
-    .history-btn{
-      float: right;
-      background: #144d3d;
-      color: #fff;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 20px;
-      font-weight: 600;
-      cursor: pointer;
-    }
+  .sticky-save button{
+    padding:16px;
+    font-size:16px;
+    border-radius:14px;
+  }
+}
+.history-btn{
+  float:right;
+  background:#144d3d;
+  color:#fff;
+  border:none;
+  padding:10px 18px;
+  border-radius:20px;
+  font-weight:600;
+  cursor:pointer;
+}
+  @media(max-width:600px){
+  .header-inner{
+    flex-direction:column;
+    gap:12px;
+    align-items:flex-start;
+  }
 
-    @media (max-width: 600px){
-      .header-inner{
-        flex-direction: column;
-        gap: 12px;
-        align-items: flex-start;
-      }
+  .history-btn{
+    align-self:flex-end;
+  }
+}
 
-      .history-btn{
-        align-self: flex-end;
-      }
-    }
-  </style>
+
+</style>
 </head>
 
 <body>
 
-  <!-- HEADER -->
-  <div class="header">
-    <div class="header-inner">
-      <div>
-        <div class="title">Daily Hisab</div>
-        <div class="subline">business profit kab hoga</div>
-      </div>
-
-      <button onclick="goToHistory()" class="history-btn">⏱ History</button>
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <div class="title">Daily Hisab</div>
+      <div class="subline">business profit kab hoga...</div>
     </div>
+
+    <button onclick="goToHistory()" class="history-btn">
+      ⏱ History
+    </button>
+  </div>
+</div>
+
+
+<!-- PREVIOUS SAVING -->
+<div class="container">
+  <div class="section">Previous Saving</div>
+  Cash ₹ <input id="prevCashInput" readonly>
+  Online ₹ <input id="prevOnlineInput" readonly>
+  <p class="total">Total ₹ <span id="prevTotal">0</span></p>
+</div>
+
+<!-- WEEKLY INFO -->
+<div class="container info">
+  <div class="section">Weekly Info</div>
+  <span id="weeklyInfo">–</span>
+</div>
+
+<!-- DATE -->
+<div class="container">
+  <div class="section">Date</div>
+  <div class="date-box">
+    <input type="date" id="date">
+  </div>
+</div>
+
+<!-- INVESTMENT -->
+<div class="container">
+  <div class="section">---- Investment (Cash / Online) ----</div>
+
+  <div class="row"><label>Item</label><label>Cash</label><label>Online</label></div>
+
+  <div class="row"><label>Chicken</label><input class="invCash" id="ChickenCash"><input class="invOnline" id="ChickenOnline"></div>
+  <div class="row"><label>Dairy</label><input class="invCash" id="DairyCash"><input class="invOnline" id="DairyOnline"></div>
+  <div class="row"><label>Grocery</label><input class="invCash" id="GroceryCash"><input class="invOnline" id="GroceryOnline"></div>
+  <div class="row"><label>Sabji</label><input class="invCash" id="SabjiCash"><input class="invOnline" id="SabjiOnline"></div>
+  <div class="row"><label>Disposal</label><input class="invCash" id="DisposalCash"><input class="invOnline" id="DisposalOnline"></div>
+  <div class="row"><label>Gas</label><input class="invCash" id="GasCash"><input class="invOnline" id="GasOnline"></div>
+  <div class="row"><label>Diesel</label><input class="invCash" id="DieselCash"><input class="invOnline" id="DieselOnline"></div>
+  <div class="row"><label>Petrol</label><input class="invCash" id="PetrolCash"><input class="invOnline" id="PetrolOnline"></div>
+  <div class="row"><label>Egg</label><input class="invCash" id="EggCash"><input class="invOnline" id="EggOnline"></div>
+  <div class="row"><label>Sachin Salary</label><input class="invCash" id="SachinCash"><input class="invOnline" id="SachinOnline"></div>
+  <div class="row"><label>Sattu Salary</label><input class="invCash" id="SattuCash"><input class="invOnline" id="SattuOnline"></div>
+  <div class="row"><label>Other</label><input class="invCash" id="OtherCash"><input class="invOnline" id="OtherOnline"></div>
+
+  <p class="total">
+    Investment Cash ₹ <span id="invCashTotal">0</span> |
+    Investment Online ₹ <span id="invOnlineTotal">0</span>
+  </p>
+</div>
+
+<!-- PRODUCTION -->
+<div class="container">
+  <div class="section">---- Production ----</div>
+ <div class="row">
+  <label>Biryani Made (kg)</label>
+  <input id="BiryaniMade">
+</div>
+
+<div class="row">
+  <label>Fried Made (kg)</label>
+  <input id="FriedMade">
+</div>
+<div class="row">
+  <label>Remaining Biryani (kg)</label>
+  <input id="BiryaniLeft">
+</div>
+
+<div class="row">
+  <label>Remaining Fried (kg)</label>
+  <input id="FriedLeft">
+</div>
+</div>
+
+<!-- SELL -->
+<div class="container">
+  <div class="section">---- Sell ----</div>
+  Sell Cash: <input id="SellCash">
+  Sell Online: <input id="SellOnline">
+  <p class="total">Total Sell ₹ <span id="SellTotal">0</span></p>
+</div>
+
+<!-- CURRENT SAVING -->
+<div class="container">
+  <div class="section">---- Current Saving ----</div>
+  Cash ₹ <span id="CurrentCash">0</span><br>
+  Online ₹ <span id="CurrentOnline">0</span>
+  <p class="total">Total ₹ <span id="CurrentTotal">0</span></p>
+</div>
+
+<!-- SAVE BUTTON -->
+<div class="sticky-save">
+  <button onclick="saveDay()">💾 Save / Update Day</button>
+  <p id="msg"></p>
+</div>
+
+<!-- LOADER -->
+<div id="popupLoader" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9999;align-items:center;justify-content:center">
+  <div id="popupBox" style="background:#fff;padding:22px 30px;border-radius:10px;text-align:center;min-width:260px">
+  
+  <div id="popupText" style="font-size:18px;font-weight:bold">
+    ⏳ Please wait...
   </div>
 
-  <!-- PREVIOUS SAVING -->
-  <div class="container">
-    <div class="section">Previous Saving</div>
-    Cash ₹ <input id="prevCashInput" readonly>
-    Online ₹ <input id="prevOnlineInput" readonly>
-    <p class="total">Total ₹ <span id="prevTotal">0</span></p>
-  </div>
+  <button id="waBtn"
+    style="margin-top:18px;display:none;
+    background:#25D366;color:#fff;border:none;
+    padding:12px 18px;border-radius:10px;
+    font-size:16px;font-weight:600;
+    cursor:pointer;">
+    📲 Send message on WhatsApp
+  </button>
 
-  <!-- WEEKLY INFO -->
-  <div class="container info">
-    <div class="section">Weekly Info</div>
-    <span id="weeklyInfo">–</span>
-  </div>
+</div>
 
-  <!-- DATE -->
-  <div class="container">
-    <div class="section">Date</div>
-    <div class="date-box">
-      <input type="date" id="date">
-    </div>
-  </div>
+</div>
 
-  <!-- SAVE BUTTON -->
-  <div class="sticky-save">
-    <button onclick="saveDay()">💾 Save / Update Day</button>
-    <p id="msg"></p>
-  </div>
+<!-- JS (UNCHANGED) -->
+<script>
+  let isSaving = false;
 
-  <!-- LOADER -->
-  <div id="popupLoader" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9999;align-items:center;justify-content:center">
-    <div style="background:#fff;padding:20px 30px;border-radius:8px;font-size:18px;font-weight:bold">
-      ⏳ Please wait...
-    </div>
-  </div>
+let waMessage = "";
 
-  <!-- JS -->
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aqSyRrVVrAEEGFRj9RxRrCq66nzaNdoSl96xbyxPXzZGeyUXG0g/exec";
+let popupLoader = document.getElementById("popupLoader");
+let popupText = document.getElementById("popupText");
+let waBtn = document.getElementById("waBtn");
 
-    function getWhatsappMessage(date){
-      return `✅ Daily Hisab Saved
+let activeRequest = 0;
+
+
+function showPopup(text){
+  popupLoader.style.display = "flex";
+  popupText.innerText = text;
+  waBtn.style.display = "none";
+}
+
+function showWhatsappButton(){
+  popupText.innerText = "✅ Saved successfully";
+  waBtn.style.display = "inline-block";
+}
+
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aqSyRrVVrAEEGFRj9RxRrCq66nzaNdoSl96xbyxPXzZGeyUXG0g/exec";
+  function getWhatsappMessage(date) {
+  return `✅ Daily Hisab Saved
 📅 Date: ${date}
-⏰ Time: ${new Date().toLocaleTimeString()}
-(Team ke liye update)`;
+(sheet me save ho gaya h)`;
+}
+waBtn.onclick = () => {
+  const waUrl = "https://web.whatsapp.com/send?text=" + encodeURIComponent(waMessage);
+  window.open(waUrl, "_blank");
+
+  popupText.innerText = "⏳ Please wait...";
+  waBtn.style.display = "none";
+  popupLoader.style.display = "none";
+};
+
+
+///let popupLoader=null,activeRequest=0;
+  let isDirty = false;
+
+function num(v){return Number(v)||0}
+function setInputsDisabled(d){
+document.querySelectorAll(".invCash,.invOnline,#SellCash,#SellOnline,#BiryaniMade,#FriedMade,#BiryaniLeft,#FriedLeft")
+.forEach(i=>i.disabled=d)}
+  document.querySelectorAll("input").forEach(i=>{
+  if(i.type !== "date"){
+    i.addEventListener("input",()=> isDirty = true);
+  }
+});
+
+
+function goToHistory(){
+  if(isDirty){
+    if(!confirm("Data save nahi hua hai. History par jana hai?")) return;
+  }
+  window.location.href = "./history.html";
+}
+
+
+function calculate(){
+let ic=0,io=0;
+document.querySelectorAll(".invCash").forEach(i=>ic+=num(i.value));
+document.querySelectorAll(".invOnline").forEach(i=>io+=num(i.value));
+invCashTotal.innerText=ic;invOnlineTotal.innerText=io;
+SellTotal.innerText=num(SellCash.value)+num(SellOnline.value);
+let pc=num(prevCashInput.value),po=num(prevOnlineInput.value);
+CurrentCash.innerText=pc+num(SellCash.value)-ic;
+CurrentOnline.innerText=po+num(SellOnline.value)-io;
+CurrentTotal.innerText=num(CurrentCash.innerText)+num(CurrentOnline.innerText);
+prevTotal.innerText=pc+po;
+}
+
+document.querySelectorAll(".invCash,.invOnline,#SellCash,#SellOnline,#BiryaniMade,#FriedMade,#BiryaniLeft,#FriedLeft")
+.forEach(i=>i.addEventListener("input",calculate));
+  
+function clearDayInputs(){
+  // 🔹 sirf editable inputs clear honge
+  document.querySelectorAll("input").forEach(i=>{
+    if(
+      i.type !== "date" &&        // date input safe
+      !i.hasAttribute("readonly") // previous saving safe
+    ){
+      i.value = "";
     }
+  });
 
-    let popupLoader = null;
-    let activeRequest = 0;
-    let isDirty = false;
+  // 🔹 totals reset
+  invCashTotal.innerText = 0;
+  invOnlineTotal.innerText = 0;
+  SellTotal.innerText = 0;
+  CurrentCash.innerText = 0;
+  CurrentOnline.innerText = 0;
+  CurrentTotal.innerText = 0;
 
-    function num(v){ return Number(v) || 0; }
+  // 🔹 weekly info reset
+  weeklyInfo.innerText = "–";
+}
 
-    function setInputsDisabled(d){
-      document.querySelectorAll(".invCash,.invOnline,#SellCash,#SellOnline,#BiryaniMade,#FriedMade,#BiryaniLeft,#FriedLeft")
-        .forEach(i => i.disabled = d);
-    }
+async function onDateChange(){
+if(!date.value)return;
+  if(isDirty){
+  if(!confirm("Data save nahi hua hai. Continue?")) return;
+}
+ clearDayInputs(); 
 
-    function showLoader(t="Please wait..."){
-      popupLoader.style.display = "flex";
-      popupLoader.querySelector("div").innerText = "⏳ " + t;
-    }
+const id=++activeRequest;
+setInputsDisabled(true);
+if (!isSaving) {
+  showPopup("⏳ Loading data...");
+}
 
-    function hideLoader(){
-      popupLoader.style.display = "none";
-    }
+const p=await(await fetch(SCRIPT_URL+"?prevOf="+date.value)).json();
+prevCashInput.value=p.currentCash||0;
+prevOnlineInput.value=p.currentOnline||0;
+const d=await(await fetch(SCRIPT_URL+"?date="+date.value)).json();
+if(d.status!=="NOT_FOUND"){Object.keys(d).forEach(k=>{let e=document.getElementById(k);if(e)e.value=d[k]})}
+const w=await(await fetch(SCRIPT_URL+"?lastWeekOf="+date.value)).json();
+if(w.status!=="NOT_FOUND"){
+weeklyInfo.innerHTML=`<b>Last week (${w.date})</b><br><br>
+🍚 Biryani: ${w.biryaniSold} kg sold<br>
+🍗 Fried: ${w.friedSold} kg sold<br>
+💰 Sell ₹${w.sell}`;
+}
+if (!isSaving) {
+  popupLoader.style.display = "none";
+}
+setInputsDisabled(false); // 🔓 UNLOCK inputs
+calculate();              // 🔢 recalc previous saving
+  isDirty = false; 
+}
+date.addEventListener("change",onDateChange);
 
-    function goToHistory(){
-      if(isDirty){
-        if(!confirm("Data save nahi hua hai. History par jana hai?")) return;
-      }
-      window.location.href = "./history.html";
-    }
+async function saveDay(){
+  if(!date.value) return alert("Date select karo");
+ isSaving = true; // 🔒 block date loader
+  setInputsDisabled(true);
+  showPopup("⏳ Saving data...");
 
-    async function onDateChange(){
-      if(!date.value) return;
+  const data={date:date.value};
+  document.querySelectorAll("input").forEach(i=>{
+    if(i.id && i.type!=="date") data[i.id]=i.value
+  });
 
-      clearDayInputs();
-      showLoader("Loading data...");
-      setInputsDisabled(true);
+  data.CurrentCash=CurrentCash.innerText;
+  data.CurrentOnline=CurrentOnline.innerText;
+  data.CurrentTotal=CurrentTotal.innerText;
+  data.SellTotal=SellTotal.innerText;
+  data.InvestmentCashTotal = invCashTotal.innerText;
+  data.InvestmentOnlineTotal = invOnlineTotal.innerText;
 
-      const p = await (await fetch(SCRIPT_URL + "?prevOf=" + date.value)).json();
-      prevCashInput.value = p.currentCash || 0;
-      prevOnlineInput.value = p.currentOnline || 0;
+  await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify(data)});
 
-      hideLoader();
-      setInputsDisabled(false);
-      isDirty = false;
-    }
+  isDirty = false;
+setInputsDisabled(false);
+calculate();
 
-    date.addEventListener("change", onDateChange);
+  // WhatsApp message ready
+  waMessage = getWhatsappMessage(date.value);
 
-    async function saveDay(){
-      let waWindow = window.open("", "_blank");
-      if(!date.value) return alert("Date select karo");
+  // 3 sec delay ke baad button dikhao
+  setTimeout(() => {
+    showWhatsappButton();
+    isSaving = false; // 🔓 release
+  }, 3000);
+}
 
-      showLoader("Saving data...");
-      setInputsDisabled(true);
 
-      const data = { date: date.value };
-      document.querySelectorAll("input").forEach(i=>{
-        if(i.id && i.type !== "date") data[i.id] = i.value;
-      });
-
-      await fetch(SCRIPT_URL,{
-        method: "POST",
-        body: JSON.stringify(data)
-      });
-
-      hideLoader();
-      setInputsDisabled(false);
-      isDirty = false;
-
-      setTimeout(()=>{
-        const waUrl = "https://wa.me/?text=" + encodeURIComponent(getWhatsappMessage(date.value));
-        waWindow.location.href = waUrl;
-      },3000);
-    }
-
-    function clearDayInputs(){
-      document.querySelectorAll("input").forEach(i=>{
-        if(i.type !== "date" && !i.hasAttribute("readonly")){
-          i.value = "";
-        }
-      });
-    }
-
-    window.onload = ()=>{
-      popupLoader = document.getElementById("popupLoader");
-      setInputsDisabled(true);
-    };
-  </script>
+window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsDisabled(true)}
+</script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
