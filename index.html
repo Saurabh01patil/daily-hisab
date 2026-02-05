@@ -418,6 +418,9 @@ hideLoader();setInputsDisabled(false);calculate();
 date.addEventListener("change",onDateChange);
 
 async function saveDay(){
+  // 👇 popup ko user click ke sath open karo (popup blocker se bachne ke liye)
+let waWindow = window.open("", "_blank");
+
 if(!date.value)return alert("Date select karo");
 setInputsDisabled(true);showLoader("Saving data...");
 const data={date:date.value};
@@ -435,9 +438,7 @@ hideLoader();setInputsDisabled(false);
   // 🔔 WhatsApp notification (manual send)
 const waMsg = getWhatsappMessage(date.value);
 const waUrl = "https://wa.me/?text=" + encodeURIComponent(waMsg);
-window.open(waUrl, "_blank");
-
-
+waWindow.location.href = waUrl;
 
 }
 
@@ -446,6 +447,7 @@ window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsD
 
 </body>
 </html>
+
 
 
 
