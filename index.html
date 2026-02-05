@@ -462,7 +462,8 @@ weeklyInfo.innerHTML=`<b>Last week (${w.date})</b><br><br>
 if (!isSaving) {
   popupLoader.style.display = "none";
 }
-
+setInputsDisabled(false); // 🔓 UNLOCK inputs
+calculate();              // 🔢 recalc previous saving
   isDirty = false; 
 }
 date.addEventListener("change",onDateChange);
@@ -488,7 +489,8 @@ async function saveDay(){
   await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify(data)});
 
   isDirty = false;
-  setInputsDisabled(false);
+setInputsDisabled(false);
+calculate();
 
   // WhatsApp message ready
   waMessage = getWhatsappMessage(date.value);
@@ -506,6 +508,7 @@ window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsD
 
 </body>
 </html>
+
 
 
 
