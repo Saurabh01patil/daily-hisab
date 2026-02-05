@@ -314,22 +314,64 @@ input{
 
 <!-- LOADER -->
 <div id="popupLoader" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9999;align-items:center;justify-content:center">
-  <div style="background:#fff;padding:20px 30px;border-radius:8px;font-size:18px;font-weight:bold">
+  <div id="popupBox" style="background:#fff;padding:22px 30px;border-radius:10px;text-align:center;min-width:260px">
+  
+  <div id="popupText" style="font-size:18px;font-weight:bold">
     ⏳ Please wait...
   </div>
+
+  <button id="waBtn"
+    style="margin-top:18px;display:none;
+    background:#25D366;color:#fff;border:none;
+    padding:12px 18px;border-radius:10px;
+    font-size:16px;font-weight:600;
+    cursor:pointer;">
+    📲 Send message on WhatsApp
+  </button>
+
+</div>
+
 </div>
 
 <!-- JS (UNCHANGED) -->
 <script>
+let waMessage = "";
+
+let popupLoader = document.getElementById("popupLoader");
+let popupText = document.getElementById("popupText");
+let waBtn = document.getElementById("waBtn");
+
+let activeRequest = 0;
+
+
+function showPopup(text){
+  popupLoader.style.display = "flex";
+  popupText.innerText = text;
+  waBtn.style.display = "none";
+}
+
+function showWhatsappButton(){
+  popupText.innerText = "✅ Saved successfully";
+  waBtn.style.display = "inline-block";
+}
+
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aqSyRrVVrAEEGFRj9RxRrCq66nzaNdoSl96xbyxPXzZGeyUXG0g/exec";
   function getWhatsappMessage(date) {
   return `✅ Daily Hisab Saved
 📅 Date: ${date}
-⏰ Time: ${new Date().toLocaleTimeString()}
-(Team ke liye update)`;
+(sheet me save ho gaya h)`;
 }
+waBtn.onclick = () => {
+  const waUrl = "https://web.whatsapp.com/send?text=" + encodeURIComponent(waMessage);
+  window.open(waUrl, "_blank");
 
-let popupLoader=null,activeRequest=0;
+  popupText.innerText = "⏳ Please wait...";
+  waBtn.style.display = "none";
+  popupLoader.style.display = "none";
+};
+
+
+///let popupLoader=null,activeRequest=0;
   let isDirty = false;
 
 function num(v){return Number(v)||0}
@@ -418,39 +460,44 @@ hideLoader();setInputsDisabled(false);calculate();
 date.addEventListener("change",onDateChange);
 
 async function saveDay(){
-  // 👇 popup ko user click ke sath open karo (popup blocker se bachne ke liye)
-let waWindow = window.open("", "_blank");
+  if(!date.value) return alert("Date select karo");
 
-if(!date.value)return alert("Date select karo");
-setInputsDisabled(true);showLoader("Saving data...");
-const data={date:date.value};
-document.querySelectorAll("input").forEach(i=>{if(i.id&&i.type!=="date")data[i.id]=i.value});
-data.CurrentCash=CurrentCash.innerText;
-data.CurrentOnline=CurrentOnline.innerText;
-data.CurrentTotal=CurrentTotal.innerText;
-data.SellTotal=SellTotal.innerText;
+  setInputsDisabled(true);
+  showPopup("⏳ Saving data...");
+
+  const data={date:date.value};
+  document.querySelectorAll("input").forEach(i=>{
+    if(i.id && i.type!=="date") data[i.id]=i.value
+  });
+
+  data.CurrentCash=CurrentCash.innerText;
+  data.CurrentOnline=CurrentOnline.innerText;
+  data.CurrentTotal=CurrentTotal.innerText;
+  data.SellTotal=SellTotal.innerText;
   data.InvestmentCashTotal = invCashTotal.innerText;
-data.InvestmentOnlineTotal = invOnlineTotal.innerText;
-await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify(data)});
-msg.innerText = "Saved ✔ | WhatsApp opening...";
-hideLoader();setInputsDisabled(false);
+  data.InvestmentOnlineTotal = invOnlineTotal.innerText;
+
+  await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify(data)});
+
   isDirty = false;
-  // 🔔 WhatsApp notification (manual send)
+  setInputsDisabled(false);
+
+  // WhatsApp message ready
+  waMessage = getWhatsappMessage(date.value);
+
+  // 3 sec delay ke baad button dikhao
   setTimeout(() => {
-  const waMsg = getWhatsappMessage(date.value);
-// const waUrl = "https://wa.me/?text=" + encodeURIComponent(waMsg);
-    const waUrl = "https://web.whatsapp.com/send?text=" + encodeURIComponent(waMsg);
-
-  waWindow.location.href = waUrl;
-}, 3000); 
-
+    showWhatsappButton();
+  }, 3000);
 }
+
 
 window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsDisabled(true)}
 </script>
 
 </body>
 </html>
+
 
 
 
