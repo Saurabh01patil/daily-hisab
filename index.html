@@ -438,7 +438,9 @@ hideLoader();setInputsDisabled(false);
   // 🔔 WhatsApp notification (manual send)
   setTimeout(() => {
   const waMsg = getWhatsappMessage(date.value);
- const waUrl = "https://wa.me/?text=" + encodeURIComponent(waMsg);
+// const waUrl = "https://wa.me/?text=" + encodeURIComponent(waMsg);
+    const waUrl = "https://web.whatsapp.com/send?text=" + encodeURIComponent(waMsg);
+
   waWindow.location.href = waUrl;
 }, 3000); 
 
@@ -449,6 +451,7 @@ window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsD
 
 </body>
 </html>
+
 
 
 
