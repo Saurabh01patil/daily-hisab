@@ -335,6 +335,8 @@ input{
 
 <!-- JS (UNCHANGED) -->
 <script>
+  let isSaving = false;
+
 let waMessage = "";
 
 let popupLoader = document.getElementById("popupLoader");
@@ -441,7 +443,10 @@ if(!date.value)return;
 
 const id=++activeRequest;
 setInputsDisabled(true);
- showPopup("⏳ Loading data...");
+if (!isSaving) {
+  showPopup("⏳ Loading data...");
+}
+
 const p=await(await fetch(SCRIPT_URL+"?prevOf="+date.value)).json();
 prevCashInput.value=p.currentCash||0;
 prevOnlineInput.value=p.currentOnline||0;
@@ -454,14 +459,17 @@ weeklyInfo.innerHTML=`<b>Last week (${w.date})</b><br><br>
 🍗 Fried: ${w.friedSold} kg sold<br>
 💰 Sell ₹${w.sell}`;
 }
-popupLoader.style.display = "none";
+if (!isSaving) {
+  popupLoader.style.display = "none";
+}
+
   isDirty = false; 
 }
 date.addEventListener("change",onDateChange);
 
 async function saveDay(){
   if(!date.value) return alert("Date select karo");
-
+ isSaving = true; // 🔒 block date loader
   setInputsDisabled(true);
   showPopup("⏳ Saving data...");
 
@@ -488,6 +496,7 @@ async function saveDay(){
   // 3 sec delay ke baad button dikhao
   setTimeout(() => {
     showWhatsappButton();
+    isSaving = false; // 🔓 release
   }, 3000);
 }
 
@@ -497,6 +506,7 @@ window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsD
 
 </body>
 </html>
+
 
 
 
