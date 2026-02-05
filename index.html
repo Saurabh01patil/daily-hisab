@@ -432,13 +432,15 @@ data.SellTotal=SellTotal.innerText;
   data.InvestmentCashTotal = invCashTotal.innerText;
 data.InvestmentOnlineTotal = invOnlineTotal.innerText;
 await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify(data)});
-msg.innerText="Saved ✔";
+msg.innerText = "Saved ✔ | WhatsApp opening...";
 hideLoader();setInputsDisabled(false);
   isDirty = false;
   // 🔔 WhatsApp notification (manual send)
-const waMsg = getWhatsappMessage(date.value);
-const waUrl = "https://wa.me/?text=" + encodeURIComponent(waMsg);
-waWindow.location.href = waUrl;
+  setTimeout(() => {
+  const waMsg = getWhatsappMessage(date.value);
+ const waUrl = "https://wa.me/?text=" + encodeURIComponent(waMsg);
+  waWindow.location.href = waUrl;
+}, 3000); 
 
 }
 
@@ -447,6 +449,7 @@ window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsD
 
 </body>
 </html>
+
 
 
 
