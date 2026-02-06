@@ -270,6 +270,7 @@ input{
     Investment Cash ₹ <span id="invCashTotal">0</span> |
     Investment Online ₹ <span id="invOnlineTotal">0</span>
   </p>
+   <p class="total">Total Investment ₹ <span id="InvestmentTotal">0</span></p>
 </div>
 
 <!-- PRODUCTION -->
@@ -431,6 +432,8 @@ CurrentCash.innerText=pc+num(SellCash.value)-ic;
 CurrentOnline.innerText=po+num(SellOnline.value)-io;
 CurrentTotal.innerText=num(CurrentCash.innerText)+num(CurrentOnline.innerText);
 prevTotal.innerText=pc+po;
+InvestmentTotal.innerText = ic + io;
+
 }
 
 document.querySelectorAll(".invCash,.invOnline,#SellCash,#SellOnline,#BiryaniMade,#FriedMade,#BiryaniLeft,#FriedLeft")
@@ -510,6 +513,8 @@ async function saveDay(){
   data.SellTotal=SellTotal.innerText;
   data.InvestmentCashTotal = invCashTotal.innerText;
   data.InvestmentOnlineTotal = invOnlineTotal.innerText;
+  data.TotalInvestment = Number(invCashTotal.innerText) + Number(invOnlineTotal.innerText);
+
 
   await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify(data)});
 
@@ -539,6 +544,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
