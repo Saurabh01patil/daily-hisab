@@ -233,6 +233,11 @@ input{
   <div class="section">Weekly Info</div>
   <span id="weeklyInfo">–</span>
 </div>
+<!-- LAST SAVED INFO -->
+<div class="container info">
+  <div class="section">🔔 Last Update</div>
+  <div id="lastSavedInfo">No data saved yet</div>
+</div>
 
 <!-- DATE -->
 <div class="container">
@@ -344,6 +349,26 @@ let popupText = document.getElementById("popupText");
 let waBtn = document.getElementById("waBtn");
 
 let activeRequest = 0;
+function saveLastSavedInfo(date){
+  const now = new Date();
+  const info = {
+    date: date,
+    savedBy: "Ajay", // future me dynamic bana sakte
+    time: now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
+  };
+  localStorage.setItem("lastSavedInfo", JSON.stringify(info));
+}
+
+function loadLastSavedInfo(){
+  const box = document.getElementById("lastSavedInfo");
+  const info = JSON.parse(localStorage.getItem("lastSavedInfo"));
+  if(!info) return;
+
+  box.innerHTML = `
+    📅 Date: <b>${info.date}</b><br>
+  
+  `;
+}
 
 
 function showPopup(text){
@@ -493,6 +518,7 @@ async function saveDay(){
   isDirty = false;
 setInputsDisabled(false);
 calculate();
+saveLastSavedInfo(date.value);
 
   // WhatsApp message ready
   waMessage = getWhatsappMessage(date.value);
@@ -504,12 +530,17 @@ calculate();
   }, 3000);
 }
 
+window.onload = () => {
+  popupLoader = document.getElementById("popupLoader");
+  setInputsDisabled(true);
+  loadLastSavedInfo();
+};
 
-window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsDisabled(true)}
 </script>
 
 </body>
 </html>
+
 
 
 
