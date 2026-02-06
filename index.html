@@ -210,7 +210,7 @@ input{
   <div class="header-inner">
     <div>
       <div class="title">Daily Hisab</div>
-      <div class="subline">business profit kab hoga</div>
+      <div class="subline">business profit kab hoga...</div>
     </div>
 
     <button onclick="goToHistory()" class="history-btn">
@@ -235,7 +235,7 @@ input{
 </div>
 <!-- LAST SAVED INFO -->
 <div class="container info">
-  <div class="section">🔔 Last Update</div>
+  <div class="section">Last Update</div>
   <div id="lastSavedInfo">No data saved yet</div>
 </div>
 
@@ -366,9 +366,9 @@ function loadLastSavedInfo(){
 
   box.innerHTML = `
     📅 Date: <b>${info.date}</b><br>
-  
   `;
 }
+
 
 
 function showPopup(text){
@@ -536,10 +536,12 @@ window.onload = () => {
   loadLastSavedInfo();
 };
 
+
 </script>
 
 </body>
 </html>
+
 
 
 
