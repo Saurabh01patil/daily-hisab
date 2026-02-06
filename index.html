@@ -210,7 +210,7 @@ input{
   <div class="header-inner">
     <div>
       <div class="title">Daily Hisab</div>
-      <div class="subline">business profit kab hoga</div>
+      <div class="subline">business profit kab hoga...</div>
     </div>
 
     <button onclick="goToHistory()" class="history-btn">
@@ -253,22 +253,22 @@ input{
 
   <div class="row"><label>Item</label><label>Cash</label><label>Online</label></div>
 
-  <div class="row"><label>Chicken</label><input class="invCash" id="ChickenCash"><input class="invOnline" id="ChickenOnline"></div>
-  <div class="row"><label>Dairy</label><input class="invCash" id="DairyCash"><input class="invOnline" id="DairyOnline"></div>
-  <div class="row"><label>Grocery</label><input class="invCash" id="GroceryCash"><input class="invOnline" id="GroceryOnline"></div>
-  <div class="row"><label>Sabji</label><input class="invCash" id="SabjiCash"><input class="invOnline" id="SabjiOnline"></div>
-  <div class="row"><label>Disposal</label><input class="invCash" id="DisposalCash"><input class="invOnline" id="DisposalOnline"></div>
-  <div class="row"><label>Gas</label><input class="invCash" id="GasCash"><input class="invOnline" id="GasOnline"></div>
-  <div class="row"><label>Diesel</label><input class="invCash" id="DieselCash"><input class="invOnline" id="DieselOnline"></div>
-  <div class="row"><label>Petrol</label><input class="invCash" id="PetrolCash"><input class="invOnline" id="PetrolOnline"></div>
-  <div class="row"><label>Egg</label><input class="invCash" id="EggCash"><input class="invOnline" id="EggOnline"></div>
-  <div class="row"><label>Sachin Salary</label><input class="invCash" id="SachinCash"><input class="invOnline" id="SachinOnline"></div>
-  <div class="row"><label>Sattu Salary</label><input class="invCash" id="SattuCash"><input class="invOnline" id="SattuOnline"></div>
-  <div class="row"><label>Other</label><input class="invCash" id="OtherCash"><input class="invOnline" id="OtherOnline"></div>
+  <div class="row"><label>Chicken</label><input class="invCash" placeholder="Cash ₹" id="ChickenCash"><input class="invOnline" placeholder="Online ₹" id="ChickenOnline"></div>
+  <div class="row"><label>Dairy</label><input class="invCash" placeholder="Cash ₹" id="DairyCash"><input class="invOnline" placeholder="Online ₹" id="DairyOnline"></div>
+  <div class="row"><label>Grocery</label><input class="invCash" placeholder="Cash ₹" id="GroceryCash"><input class="invOnline" placeholder="Online ₹" id="GroceryOnline"></div>
+  <div class="row"><label>Sabji</label><input class="invCash" placeholder="Cash ₹" id="SabjiCash"><input class="invOnline" placeholder="Online ₹" id="SabjiOnline"></div>
+  <div class="row"><label>Disposal</label><input class="invCash" placeholder="Cash ₹" id="DisposalCash"><input class="invOnline" placeholder="Online ₹" id="DisposalOnline"></div>
+  <div class="row"><label>Gas</label><input class="invCash" placeholder="Cash ₹" id="GasCash"><input class="invOnline" placeholder="Online ₹" id="GasOnline"></div>
+  <div class="row"><label>Diesel</label><input class="invCash" placeholder="Cash ₹" id="DieselCash"><input class="invOnline" placeholder="Online ₹" id="DieselOnline"></div>
+  <div class="row"><label>Petrol</label><input class="invCash" placeholder="Cash ₹" id="PetrolCash"><input class="invOnline" placeholder="Online ₹" id="PetrolOnline"></div>
+  <div class="row"><label>Egg</label><input class="invCash" placeholder="Cash ₹" id="EggCash"><input class="invOnline" placeholder="Online ₹" id="EggOnline"></div>
+  <div class="row"><label>Sachin Salary</label><input class="invCash" placeholder="Cash ₹" id="SachinCash"><input class="invOnline" placeholder="Online ₹" id="SachinOnline"></div>
+  <div class="row"><label>Sattu Salary</label><input class="invCash" placeholder="Cash ₹" id="SattuCash"><input class="invOnline" placeholder="Online ₹" id="SattuOnline"></div>
+  <div class="row"><label>Other</label><input class="invCash" placeholder="Cash ₹" id="OtherCash"><input class="invOnline" placeholder="Online ₹" id="OtherOnline"></div>
 
   <p class="total">
-    Investment Cash ₹ <span id="invCashTotal">0</span> |
-    Investment Online ₹ <span id="invOnlineTotal">0</span>
+    Invest Cash ₹ <span id="invCashTotal">0</span> |
+    Invest Online ₹ <span id="invOnlineTotal">0</span>
   </p>
    <p class="total">Total Investment ₹ <span id="InvestmentTotal">0</span></p>
 </div>
@@ -278,29 +278,29 @@ input{
   <div class="section">---- Production ----</div>
  <div class="row">
   <label>Biryani Made (kg)</label>
-  <input id="BiryaniMade">
+  <input id="BiryaniMade" placeholder="0">
 </div>
 
 <div class="row">
   <label>Fried Made (kg)</label>
-  <input id="FriedMade">
+ <input id="FriedMade" placeholder="0">
 </div>
 <div class="row">
   <label>Remaining Biryani (kg)</label>
-  <input id="BiryaniLeft">
+ <input id="BiryaniLeft" placeholder="0">
 </div>
 
 <div class="row">
   <label>Remaining Fried (kg)</label>
-  <input id="FriedLeft">
+  <input id="FriedLeft" placeholder="0">
 </div>
 </div>
 
 <!-- SELL -->
 <div class="container">
   <div class="section">---- Sell ----</div>
-  Sell Cash: <input id="SellCash">
-  Sell Online: <input id="SellOnline">
+  Sell Cash:<input id="SellCash" placeholder="Cash ₹">
+  Sell Online:<input id="SellOnline" placeholder="Online ₹">
   <p class="total">Total Sell ₹ <span id="SellTotal">0</span></p>
 </div>
 
@@ -544,6 +544,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
