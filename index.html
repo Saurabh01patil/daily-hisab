@@ -349,24 +349,22 @@ let popupText = document.getElementById("popupText");
 let waBtn = document.getElementById("waBtn");
 
 let activeRequest = 0;
-function saveLastSavedInfo(date){
-  const now = new Date();
-  const info = {
-    date: date,
-    savedBy: "Ajay", // future me dynamic bana sakte
-    time: now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
-  };
-  localStorage.setItem("lastSavedInfo", JSON.stringify(info));
-}
 
-function loadLastSavedInfo(){
+async function loadLastSavedFromSheet(){
   const box = document.getElementById("lastSavedInfo");
-  const info = JSON.parse(localStorage.getItem("lastSavedInfo"));
-  if(!info) return;
 
-  box.innerHTML = `
-    📅 Date: <b>${info.date}</b><br>
-  `;
+  try{
+    const res = await fetch(SCRIPT_URL + "?lastSaved=true");
+    const data = await res.json();
+
+    if(data.status === "EMPTY"){
+      box.innerText = "No data saved yet";
+    }else{
+      box.innerHTML = `📅 Date: <b>${data.date}</b>`;
+    }
+  }catch(err){
+    box.innerText = "Unable to load date";
+  }
 }
 
 
@@ -518,7 +516,6 @@ async function saveDay(){
   isDirty = false;
 setInputsDisabled(false);
 calculate();
-saveLastSavedInfo(date.value);
 
   // WhatsApp message ready
   waMessage = getWhatsappMessage(date.value);
@@ -533,14 +530,16 @@ saveLastSavedInfo(date.value);
 window.onload = () => {
   popupLoader = document.getElementById("popupLoader");
   setInputsDisabled(true);
-  loadLastSavedInfo();
+  loadLastSavedFromSheet();
 };
+
 
 
 </script>
 
 </body>
 </html>
+
 
 
 
