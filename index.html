@@ -68,21 +68,25 @@ body{
   background:#0f3c30;
 }
 
-/* Mobile */
 @media(max-width:768px){
+
   .header-top{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:12px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+
+  .header-top > div:first-child{
+    flex:1;
+  }
+
+  .history-btn{
+    margin-left:auto;
   }
 
   #lastDieselBox{
     width:100%;
+    margin-top:12px;
     text-align:center;
-  }
-
-  .history-btn{
-    align-self:flex-end;
   }
 }
 
@@ -615,6 +619,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
