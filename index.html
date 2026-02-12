@@ -205,7 +205,6 @@ input{
 </head>
 
 <body>
-
 <div class="header">
   <div class="header-inner">
     <div>
@@ -218,6 +217,19 @@ input{
     </button>
   </div>
 </div>
+
+<!-- DIESEL BOX -->
+<div id="lastDieselBox" style="
+max-width:900px;
+margin:10px auto 0;
+background:#fff3e0;
+padding:12px 18px;
+border-radius:12px;
+font-weight:600;
+color:#c65100;">
+⛽ Last Diesel: Loading...
+</div>
+
 
 <!-- LAST SAVED INFO -->
 <div class="container info">
@@ -538,11 +550,32 @@ calculate();
     isSaving = false; // 🔓 release
   }, 3000);
 }
+async function loadLastDiesel(){
+  try{
+    const res = await fetch(SCRIPT_URL + "?lastDiesel=true");
+    const data = await res.json();
+
+    const box = document.getElementById("lastDieselBox");
+
+    if(data.status === "NOT_FOUND"){
+      box.innerText = "⛽ No diesel record found";
+      return;
+    }
+
+    box.innerText =
+      `⛽ Last Diesel: ₹${data.amount} on ${data.date}`;
+
+  }catch(err){
+    document.getElementById("lastDieselBox").innerText =
+      "⛽ Unable to load";
+  }
+}
 
 window.onload = () => {
   popupLoader = document.getElementById("popupLoader");
   setInputsDisabled(true);
   loadLastSavedFromSheet();
+   loadLastDiesel(); 
 };
 
 
@@ -551,6 +584,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
