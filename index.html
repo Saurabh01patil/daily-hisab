@@ -67,37 +67,37 @@ body{
 .history-btn:hover{
   background:#0f3c30;
 }
-
 @media(max-width:768px){
 
   .header-top{
-    display:grid;
-    grid-template-columns: 1fr auto;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+  }
+
+  /* Diesel + History row */
+  .header-row{
+    display:flex;
+    width:100%;
+    justify-content:space-between;
     align-items:center;
     gap:10px;
   }
 
-  /* Left side text */
-  .header-top > div:first-child{
-    grid-column:1/2;
-  }
-
-  /* History button same line */
-  .history-btn{
-    grid-column:2/3;
-    padding:8px 16px;
-  }
-
-  /* Diesel full width below */
   #lastDieselBox{
-    grid-column:1/3;
-    width:100%;
+    flex:1;
     text-align:center;
-    margin-top:10px;
+    padding:10px;
+    font-size:13px;
+  }
+
+  .history-btn{
+    padding:8px 16px;
+    white-space:nowrap;
   }
 
 }
-
 
 
 /* CARD */
@@ -250,15 +250,13 @@ input{
 </head>
 
 <body>
+
 <div class="header">
 
-  <div class="header-top">
-    
-    <div>
-      <h1>Daily Hisab</h1>
-      <div class="sub">Business profit kab hoga</div>
-    </div>
+  <h1>Daily Hisab</h1>
+  <div class="sub">Business profit kab hoga</div>
 
+  <div class="header-row">
     <div id="lastDieselBox">
       ⛽ Last Diesel: Loading...
     </div>
@@ -266,12 +264,9 @@ input{
     <button onclick="goToHistory()" class="history-btn">
       ⏱ History
     </button>
-
   </div>
 
 </div>
-
-
 
 
 <!-- LAST SAVED INFO -->
@@ -627,6 +622,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
