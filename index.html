@@ -13,7 +13,7 @@ body{
   color:#222;
 }
 
-/* ================= HEADER (Premium Style) ================= */
+/* ================= HEADER ================= */
 
 .header{
   padding:24px 20px 10px;
@@ -23,8 +23,8 @@ body{
 
 .header-top{
   display:flex;
-  align-items:center;
   justify-content:space-between;
+  align-items:center;
   gap:20px;
 }
 
@@ -40,7 +40,14 @@ body{
   font-size:14px;
 }
 
-/* Diesel Badge */
+/* Right Side */
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+/* Diesel Box */
 #lastDieselBox{
   background:#1e4fa3;
   color:#fff;
@@ -49,7 +56,6 @@ body{
   font-weight:600;
   font-size:14px;
   white-space:nowrap;
-  box-shadow:0 4px 12px rgba(0,0,0,0.08);
 }
 
 /* History Button */
@@ -57,8 +63,8 @@ body{
   background:#144d3d;
   color:#fff;
   border:none;
-  padding:10px 22px;
-  border-radius:26px;
+  padding:10px 20px;
+  border-radius:25px;
   font-weight:600;
   cursor:pointer;
   transition:0.2s;
@@ -67,34 +73,24 @@ body{
 .history-btn:hover{
   background:#0f3c30;
 }
+
+/* ================= MOBILE ================= */
+
 @media(max-width:768px){
 
   .header-top{
-    display:flex;
     flex-direction:column;
     align-items:flex-start;
-    gap:12px;
   }
 
-  /* Diesel + History row */
-  .header-row{
-    display:flex;
+  .header-actions{
     width:100%;
     justify-content:space-between;
-    align-items:center;
-    gap:10px;
   }
 
   #lastDieselBox{
     flex:1;
     text-align:center;
-    padding:10px;
-    font-size:13px;
-  }
-
-  .history-btn{
-    padding:8px 16px;
-    white-space:nowrap;
   }
 
 }
@@ -251,19 +247,23 @@ input{
 
 <body>
 
-<div class="header">
+  <div class="header">
 
-  <h1>Daily Hisab</h1>
-  <div class="sub">Business profit kab hoga</div>
-
-  <div class="header-row">
-    <div id="lastDieselBox">
-      ⛽ Last Diesel: Loading...
+  <div class="header-top">
+    <div>
+      <h1>Daily Hisab</h1>
+      <div class="sub">Business profit kab hoga</div>
     </div>
 
-    <button onclick="goToHistory()" class="history-btn">
-      ⏱ History
-    </button>
+    <div class="header-actions">
+      <div id="lastDieselBox">
+        ⛽ Last Diesel: Loading...
+      </div>
+
+      <button onclick="goToHistory()" class="history-btn">
+        ⏱ History
+      </button>
+    </div>
   </div>
 
 </div>
@@ -622,6 +622,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
