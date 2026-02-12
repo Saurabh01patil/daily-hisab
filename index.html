@@ -12,30 +12,8 @@ body{
   margin:0;
   color:#222;
 }
-.top-inner{
-  max-width:900px;
-  margin:auto;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:20px;
-}
 
 /* HEADER */
-.top-bar{
-  position:sticky;
-  top:0;
-  z-index:1000;
-
-  background:#faf9f7;
-  padding:16px 30px;
-
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-
-  box-shadow:0 4px 12px rgba(0,0,0,0.05);
-}
 
 /* LEFT SIDE */
 .brand .title{
@@ -60,7 +38,50 @@ body{
   white-space:nowrap;
 }
 
-/* RIGHT BUTTON */
+/* ================= HEADER ================= */
+
+.top-bar{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:#ffffff;
+  border-bottom:1px solid #eee;
+}
+
+.top-inner{
+  max-width:900px;
+  margin:auto;
+  padding:16px 20px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+
+/* LEFT BRAND */
+.brand .title{
+  font-size:30px;
+  font-weight:700;
+  color:#e45d3c;
+}
+
+.brand .subline{
+  font-size:13px;
+  color:#777;
+}
+
+/* CENTER DIESEL */
+#lastDieselBox{
+  background:#1e4fa3;
+  color:#fff;
+  padding:10px 22px;
+  border-radius:30px;
+  font-weight:600;
+  font-size:15px;
+  white-space:nowrap;
+}
+
 .history-btn{
   background:#144d3d;
   color:#fff;
@@ -69,6 +90,26 @@ body{
   border-radius:25px;
   font-weight:600;
   cursor:pointer;
+  transition:0.2s;
+}
+
+.history-btn:hover{
+  background:#0f3c30;
+}
+
+
+/* MOBILE */
+@media (max-width:768px){
+  .top-inner{
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+  }
+
+  #lastDieselBox{
+    width:100%;
+    text-align:center;
+  }
 }
 
 
@@ -214,41 +255,8 @@ input{
     border-radius:14px;
   }
 }
-.history-btn{
-  float:right;
-  background:#144d3d;
-  color:#fff;
-  border:none;
-  padding:10px 18px;
-  border-radius:20px;
-  font-weight:600;
-  cursor:pointer;
-}
-  @media(max-width:600px){
-  .header-inner{
-    flex-direction:column;
-    gap:12px;
-    align-items:flex-start;
-  }
 
-  .history-btn{
-    align-self:flex-end;
-  }
-}
-  @media (max-width: 768px){
-
-  .top-bar{
-    flex-direction:column;
-    gap:12px;
-    padding:14px;
-  }
-
-  #lastDieselBox{
-    width:100%;
-    text-align:center;
-  }
-
-}
+ 
 
 
 
@@ -257,17 +265,23 @@ input{
 
 <body>
 <div class="top-bar">
+  <div class="top-inner">
 
-  <div class="brand">
-    ...
+    <div class="brand">
+      <div class="title">Daily Hisab</div>
+      <div class="subline">business profit kab hoga</div>
+    </div>
+
+    <div id="lastDieselBox">
+      ⛽ Last Diesel: Loading...
+    </div>
+
+    <button onclick="goToHistory()" class="history-btn">
+      ⏱ History
+    </button>
+
   </div>
-
-  <div id="lastDieselBox">...</div>
-
-  <button class="history-btn">...</button>
-
 </div>
-
 
 
 
@@ -624,6 +638,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
