@@ -210,7 +210,7 @@ input{
   <div class="header-inner">
     <div>
       <div class="title">Daily Hisab</div>
-      <div class="subline">business profit kab hoga</div>
+      <div class="subline">business profit kab hoga...</div>
     </div>
 
     <button onclick="goToHistory()" class="history-btn">
@@ -383,6 +383,10 @@ function showWhatsappButton(){
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aqSyRrVVrAEEGFRj9RxRrCq66nzaNdoSl96xbyxPXzZGeyUXG0g/exec";
   function getWhatsappMessage(date) {
+     const totalInvestment = document.getElementById("InvestmentTotal").innerText;
+  const totalSell = document.getElementById("SellTotal").innerText;
+  const currentTotal = document.getElementById("CurrentTotal").innerText;
+    
   return `✅ Daily Hisab Saved
 📅 Date: ${date}
 link : https://saurabh01patil.github.io/daily-hisab/index.html
@@ -547,6 +551,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
