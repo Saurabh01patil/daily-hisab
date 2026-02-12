@@ -14,28 +14,56 @@ body{
 }
 
 /* HEADER */
-.header{
-  padding:24px 20px;
-}
+.top-bar{
+  position:sticky;
+  top:0;
+  z-index:1000;
 
-.header-inner{
-  max-width:900px;
-  margin:auto;
+  background:#faf9f7;
+  padding:16px 30px;
+
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  justify-content:space-between;
+
+  box-shadow:0 4px 12px rgba(0,0,0,0.05);
 }
 
-.title{
-  font-size:34px;
+/* LEFT SIDE */
+.brand .title{
+  font-size:30px;
   font-weight:700;
   color:#e45d3c;
 }
 
-.subline{
-  font-size:14px;
+.brand .subline{
+  font-size:13px;
   color:#777;
 }
+
+/* CENTER DIESEL */
+#lastDieselBox{
+  background:#1e4fa3;
+  color:#fff;
+  padding:10px 22px;
+  border-radius:30px;
+  font-weight:600;
+  font-size:15px;
+  white-space:nowrap;
+}
+
+/* RIGHT BUTTON */
+.history-btn{
+  background:#144d3d;
+  color:#fff;
+  border:none;
+  padding:10px 20px;
+  border-radius:25px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+
 
 /* CARD */
 .container{
@@ -112,22 +140,6 @@ input{
   border:1px solid #ddd;
   font-size:16px;
 }
-#lastDieselBox{
-  position:sticky;
-  top:0;
-  z-index:999;
-  max-width:900px;
-  margin:10px auto;
-  padding:14px 22px;
-  background:#0d47a1;     
-  color:#fff;
-  font-weight:600;
-  font-size:16px;
-  border-radius:30px;      
-  text-align:center;
-  box-shadow:0 6px 18px rgba(0,0,0,0.15);
-}
-
 
   /* =========================
    MOBILE RESPONSIVE FIX
@@ -215,29 +227,44 @@ input{
     align-self:flex-end;
   }
 }
+  @media (max-width: 768px){
+
+  .top-bar{
+    flex-direction:column;
+    gap:12px;
+    padding:14px;
+  }
+
+  #lastDieselBox{
+    width:100%;
+    text-align:center;
+  }
+
+}
+
 
 
 </style>
 </head>
 
 <body>
-<div class="header">
-  <div class="header-inner">
-    <div>
-      <div class="title">Daily Hisab</div>
-      <div class="subline">business profit kab hoga</div>
-    </div>
+<div class="top-bar">
 
-    <button onclick="goToHistory()" class="history-btn">
-      ⏱ History
-    </button>
+  <div class="brand">
+    <div class="title">Daily Hisab</div>
+    <div class="subline">business profit kab hoga</div>
   </div>
+
+  <div id="lastDieselBox">
+    ⛽ Last Diesel: Loading...
+  </div>
+
+  <button onclick="goToHistory()" class="history-btn">
+    ⏱ History
+  </button>
+
 </div>
 
-<!-- DIESEL BOX -->
-<div id="lastDieselBox">
-⛽ Last Diesel: Loading...
-</div>
 
 
 
@@ -594,6 +621,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
