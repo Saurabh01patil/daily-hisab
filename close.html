@@ -81,14 +81,21 @@ async function saveClosed(){
 
   const comment = document.getElementById("comment").value;
 
-  const data = {
-    date: selectedDate,
-    Status: "Closed",
-    Comment: comment,
-    CurrentCash: 0,
-    CurrentOnline: 0,
-    CurrentTotal: 0
-  };
+  const prev = await fetch(
+  SCRIPT_URL + "?prevOf=" + selectedDate
+).then(r => r.json());
+
+const data = {
+  date: selectedDate,
+  Status: "Closed",
+  Comment: comment,
+  CurrentCash: prev.currentCash || 0,
+  CurrentOnline: prev.currentOnline || 0,
+  CurrentTotal:
+    (Number(prev.currentCash)||0) +
+    (Number(prev.currentOnline)||0)
+};
+
 
   await fetch(SCRIPT_URL,{
     method:"POST",
