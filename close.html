@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Mark Day Closed</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  font-family:Arial;
+  background:#faf9f7;
+  padding:30px;
+  text-align:center;
+}
+
+.box{
+  background:#fff;
+  padding:30px;
+  border-radius:16px;
+  max-width:400px;
+  margin:auto;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+textarea{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  margin-top:12px;
+  font-size:14px;
+}
+
+button{
+  margin-top:18px;
+  padding:14px 20px;
+  background:#b30000;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+button:hover{
+  opacity:0.9;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>🚫 Mark Day Closed</h2>
+  <p id="dateText"></p>
+
+  <textarea id="comment"
+    placeholder="Reason (Rain / Festival / Maintenance / Personal Leave)">
+  </textarea>
+
+  <button onclick="saveClosed()">Save Closed Day</button>
+</div>
+
+<script>
+
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aqSyRrVVrAEEGFRj9RxRrCq66nzaNdoSl96xbyxPXzZGeyUXG0g/exec";
+
+const params = new URLSearchParams(window.location.search);
+const selectedDate = params.get("date");
+
+document.getElementById("dateText").innerText =
+  "Date: " + selectedDate;
+
+async function saveClosed(){
+
+  if(!selectedDate){
+    alert("Invalid date");
+    return;
+  }
+
+  const comment = document.getElementById("comment").value;
+
+  const data = {
+    date: selectedDate,
+    Status: "Closed",
+    Comment: comment,
+    CurrentCash: 0,
+    CurrentOnline: 0,
+    CurrentTotal: 0
+  };
+
+  await fetch(SCRIPT_URL,{
+    method:"POST",
+    body: JSON.stringify(data)
+  });
+
+  alert("Closed day saved ✅");
+
+  window.location.href = "./index.html";
+}
+
+</script>
+
+</body>
+</html>
