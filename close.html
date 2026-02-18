@@ -72,6 +72,36 @@ const selectedDate = params.get("date");
 document.getElementById("dateText").innerText =
   "Date: " + selectedDate;
 
+// 🔥 Create Popup Dynamically
+const popup = document.createElement("div");
+popup.style.position = "fixed";
+popup.style.inset = "0";
+popup.style.background = "rgba(0,0,0,0.4)";
+popup.style.display = "none";
+popup.style.alignItems = "center";
+popup.style.justifyContent = "center";
+popup.innerHTML = `
+  <div style="
+    background:#fff;
+    padding:25px 35px;
+    border-radius:12px;
+    font-weight:bold;
+    font-size:16px;
+    text-align:center;">
+    <span id="popupMsg">Saving...</span>
+  </div>
+`;
+document.body.appendChild(popup);
+
+function showPopup(text){
+  document.getElementById("popupMsg").innerText = text;
+  popup.style.display = "flex";
+}
+
+function hidePopup(){
+  popup.style.display = "none";
+}
+
 async function saveClosed(){
 
   if(!selectedDate){
@@ -81,33 +111,51 @@ async function saveClosed(){
 
   const comment = document.getElementById("comment").value;
 
-  const prev = await fetch(
-  SCRIPT_URL + "?prevOf=" + selectedDate
-).then(r => r.json());
+  if(!comment.trim()){
+    alert("Please enter reason");
+    return;
+  }
 
-const data = {
-  date: selectedDate,
-  Status: "Closed",
-  Comment: comment,
-  CurrentCash: prev.currentCash || 0,
-  CurrentOnline: prev.currentOnline || 0,
-  CurrentTotal:
-    (Number(prev.currentCash)||0) +
-    (Number(prev.currentOnline)||0)
-};
+  showPopup("⏳ Saving closed day...");
+  document.querySelector("button").disabled = true;
 
+  try{
 
-  await fetch(SCRIPT_URL,{
-    method:"POST",
-    body: JSON.stringify(data)
-  });
+    const prev = await fetch(
+      SCRIPT_URL + "?prevOf=" + selectedDate
+    ).then(r => r.json());
 
-  alert("Closed day saved ✅");
+    const data = {
+      date: selectedDate,
+      Status: "Closed",
+      Comment: comment,
+      CurrentCash: prev.currentCash || 0,
+      CurrentOnline: prev.currentOnline || 0,
+      CurrentTotal:
+        (Number(prev.currentCash)||0) +
+        (Number(prev.currentOnline)||0)
+    };
 
-  window.location.href = "./index.html";
+    await fetch(SCRIPT_URL,{
+      method:"POST",
+      body: JSON.stringify(data)
+    });
+
+    showPopup("✅ Closed day saved");
+
+    setTimeout(()=>{
+      window.location.href = "./index.html";
+    },1200);
+
+  }catch(err){
+    hidePopup();
+    alert("Error saving data");
+    document.querySelector("button").disabled = false;
+  }
 }
 
 </script>
+
 
 </body>
 </html>
