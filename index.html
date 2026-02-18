@@ -573,7 +573,27 @@ async function saveDay(){
   data.TotalInvestment = Number(invCashTotal.innerText) + Number(invOnlineTotal.innerText);
 
 
-  await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify(data)});
+  const res = await fetch(SCRIPT_URL,{
+  method:"POST",
+  body:JSON.stringify(data)
+});
+
+const result = await res.json();
+
+if(result.status === "DATE_SEQUENCE_ERROR"){
+
+  popupText.innerText =
+    "❌ Please complete: " + result.missingDate +
+    "\nRedirecting...";
+
+  setTimeout(()=>{
+    window.location.href =
+      "./close.html?date=" + result.missingDate;
+  },1500);
+
+  return;
+}
+
 
   isDirty = false;
 setInputsDisabled(false);
@@ -622,6 +642,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
