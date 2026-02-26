@@ -13,29 +13,88 @@ body{
   color:#222;
 }
 
-/* HEADER */
-.header{
-  padding:24px 20px;
-}
+/* ================= HEADER ================= */
 
-.header-inner{
+.header{
+  padding:24px 20px 10px;
   max-width:900px;
   margin:auto;
+}
+
+.header-top{
   display:flex;
   justify-content:space-between;
   align-items:center;
+  gap:20px;
 }
 
-.title{
+.header h1{
   font-size:34px;
-  font-weight:700;
   color:#e45d3c;
+  margin:0;
 }
 
-.subline{
-  font-size:14px;
+.sub{
   color:#777;
+  margin-top:6px;
+  font-size:14px;
 }
+
+/* Right Side */
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+/* Diesel Box */
+#lastDieselBox{
+  background:#1e4fa3;
+  color:#fff;
+  padding:10px 18px;
+  border-radius:30px;
+  font-weight:600;
+  font-size:14px;
+  white-space:nowrap;
+}
+
+/* History Button */
+.history-btn{
+  background:#144d3d;
+  color:#fff;
+  border:none;
+  padding:10px 20px;
+  border-radius:25px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.history-btn:hover{
+  background:#0f3c30;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:768px){
+
+  .header-top{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .header-actions{
+    width:100%;
+    justify-content:space-between;
+  }
+
+  #lastDieselBox{
+    flex:1;
+    text-align:center;
+  }
+
+}
+
 
 /* CARD */
 .container{
@@ -178,27 +237,9 @@ input{
     border-radius:14px;
   }
 }
-.history-btn{
-  float:right;
-  background:#144d3d;
-  color:#fff;
-  border:none;
-  padding:10px 18px;
-  border-radius:20px;
-  font-weight:600;
-  cursor:pointer;
-}
-  @media(max-width:600px){
-  .header-inner{
-    flex-direction:column;
-    gap:12px;
-    align-items:flex-start;
-  }
 
-  .history-btn{
-    align-self:flex-end;
-  }
-}
+ 
+
 
 
 </style>
@@ -206,19 +247,33 @@ input{
 
 <body>
 
-<div class="header">
-  <div class="header-inner">
+  <div class="header">
+
+  <div class="header-top">
     <div>
-      <div class="title">Daily Hisab</div>
-      <div class="subline">business profit kab hoga</div>
+      <h1>Daily Hisab</h1>
+      <div class="sub">Business profit kab hoga</div>
     </div>
 
-    <button onclick="goToHistory()" class="history-btn">
-      ⏱ History
-    </button>
+    <div class="header-actions">
+      <div id="lastDieselBox">
+        ⛽ Last Diesel: Loading...
+      </div>
+
+      <button onclick="goToHistory()" class="history-btn">
+        History
+      </button>
+    </div>
   </div>
+
 </div>
 
+
+<!-- LAST SAVED INFO -->
+<div class="container info">
+  <div class="section">Last Update</div>
+  <div id="lastSavedInfo">No data saved yet</div>
+</div>
 
 <!-- PREVIOUS SAVING -->
 <div class="container">
@@ -228,12 +283,45 @@ input{
   <p class="total">Total ₹ <span id="prevTotal">0</span></p>
 </div>
 
-<!-- WEEKLY INFO -->
-<div class="container info">
-  <div class="section">Weekly Info</div>
-  <span id="weeklyInfo">–</span>
-</div>
 
+<!-- MONTHLY PDF REPORT -->
+<div class="container info">
+  <div class="section">Monthly Statement</div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+    
+    <input type="month" id="pdfMonth" style="
+      padding:10px;
+      border-radius:8px;
+      border:1px solid #ccc;
+    ">
+
+    <!-- 👁 VIEW -->
+    <button onclick="downloadMonthlyPDF('view')" style="
+      background:#1e4fa3;
+      color:#fff;
+      border:none;
+      padding:10px 18px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:600;">
+      👁 View
+    </button>
+
+    <!-- ⬇ DOWNLOAD -->
+    <button onclick="downloadMonthlyPDF('download')" style="
+      background:#144d3d;
+      color:#fff;
+      border:none;
+      padding:10px 18px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:600;">
+      ⬇ Download
+    </button>
+
+  </div>
+</div>
 <!-- DATE -->
 <div class="container">
   <div class="section">Date</div>
@@ -248,23 +336,24 @@ input{
 
   <div class="row"><label>Item</label><label>Cash</label><label>Online</label></div>
 
-  <div class="row"><label>Chicken</label><input class="invCash" id="ChickenCash"><input class="invOnline" id="ChickenOnline"></div>
-  <div class="row"><label>Dairy</label><input class="invCash" id="DairyCash"><input class="invOnline" id="DairyOnline"></div>
-  <div class="row"><label>Grocery</label><input class="invCash" id="GroceryCash"><input class="invOnline" id="GroceryOnline"></div>
-  <div class="row"><label>Sabji</label><input class="invCash" id="SabjiCash"><input class="invOnline" id="SabjiOnline"></div>
-  <div class="row"><label>Disposal</label><input class="invCash" id="DisposalCash"><input class="invOnline" id="DisposalOnline"></div>
-  <div class="row"><label>Gas</label><input class="invCash" id="GasCash"><input class="invOnline" id="GasOnline"></div>
-  <div class="row"><label>Diesel</label><input class="invCash" id="DieselCash"><input class="invOnline" id="DieselOnline"></div>
-  <div class="row"><label>Petrol</label><input class="invCash" id="PetrolCash"><input class="invOnline" id="PetrolOnline"></div>
-  <div class="row"><label>Egg</label><input class="invCash" id="EggCash"><input class="invOnline" id="EggOnline"></div>
-  <div class="row"><label>Sachin Salary</label><input class="invCash" id="SachinCash"><input class="invOnline" id="SachinOnline"></div>
-  <div class="row"><label>Sattu Salary</label><input class="invCash" id="SattuCash"><input class="invOnline" id="SattuOnline"></div>
-  <div class="row"><label>Other</label><input class="invCash" id="OtherCash"><input class="invOnline" id="OtherOnline"></div>
+  <div class="row"><label>Chicken</label><input class="invCash" placeholder="Cash " id="ChickenCash"><input class="invOnline" placeholder="Online " id="ChickenOnline"></div>
+  <div class="row"><label>Dairy</label><input class="invCash" placeholder="Cash " id="DairyCash"><input class="invOnline" placeholder="Online " id="DairyOnline"></div>
+  <div class="row"><label>Grocery</label><input class="invCash" placeholder="Cash " id="GroceryCash"><input class="invOnline" placeholder="Online " id="GroceryOnline"></div>
+  <div class="row"><label>Sabji</label><input class="invCash" placeholder="Cash " id="SabjiCash"><input class="invOnline" placeholder="Online " id="SabjiOnline"></div>
+  <div class="row"><label>Disposal</label><input class="invCash" placeholder="Cash " id="DisposalCash"><input class="invOnline" placeholder="Online " id="DisposalOnline"></div>
+  <div class="row"><label>Gas</label><input class="invCash" placeholder="Cash " id="GasCash"><input class="invOnline" placeholder="Online " id="GasOnline"></div>
+  <div class="row"><label>Diesel</label><input class="invCash" placeholder="Cash " id="DieselCash"><input class="invOnline" placeholder="Online " id="DieselOnline"></div>
+  <div class="row"><label>Petrol</label><input class="invCash" placeholder="Cash " id="PetrolCash"><input class="invOnline" placeholder="Online " id="PetrolOnline"></div>
+  <div class="row"><label>Egg</label><input class="invCash" placeholder="Cash " id="EggCash"><input class="invOnline" placeholder="Online " id="EggOnline"></div>
+  <div class="row"><label>Sachin Salary</label><input class="invCash" placeholder="Cash" id="SachinCash"><input class="invOnline" placeholder="Online " id="SachinOnline"></div>
+  <div class="row"><label>Sattu Salary</label><input class="invCash" placeholder="Cash" id="SattuCash"><input class="invOnline" placeholder="Online " id="SattuOnline"></div>
+  <div class="row"><label>Other</label><input class="invCash" placeholder="Cash " id="OtherCash"><input class="invOnline" placeholder="Online " id="OtherOnline"></div>
 
   <p class="total">
-    Investment Cash ₹ <span id="invCashTotal">0</span> |
-    Investment Online ₹ <span id="invOnlineTotal">0</span>
+    Invest Cash ₹ <span id="invCashTotal">0</span> |
+    Invest Online ₹ <span id="invOnlineTotal">0</span>
   </p>
+   <p class="total">Total Investment ₹ <span id="InvestmentTotal">0</span></p>
 </div>
 
 <!-- PRODUCTION -->
@@ -272,29 +361,29 @@ input{
   <div class="section">---- Production ----</div>
  <div class="row">
   <label>Biryani Made (kg)</label>
-  <input id="BiryaniMade">
+  <input id="BiryaniMade" placeholder="0">
 </div>
 
 <div class="row">
   <label>Fried Made (kg)</label>
-  <input id="FriedMade">
+ <input id="FriedMade" placeholder="0">
 </div>
 <div class="row">
   <label>Remaining Biryani (kg)</label>
-  <input id="BiryaniLeft">
+ <input id="BiryaniLeft" placeholder="0">
 </div>
 
 <div class="row">
   <label>Remaining Fried (kg)</label>
-  <input id="FriedLeft">
+  <input id="FriedLeft" placeholder="0">
 </div>
 </div>
 
 <!-- SELL -->
 <div class="container">
   <div class="section">---- Sell ----</div>
-  Sell Cash: <input id="SellCash">
-  Sell Online: <input id="SellOnline">
+  Sell Cash:<input id="SellCash" placeholder="Cash">
+  Sell Online:<input id="SellOnline" placeholder="Online">
   <p class="total">Total Sell ₹ <span id="SellTotal">0</span></p>
 </div>
 
@@ -314,15 +403,93 @@ input{
 
 <!-- LOADER -->
 <div id="popupLoader" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9999;align-items:center;justify-content:center">
-  <div style="background:#fff;padding:20px 30px;border-radius:8px;font-size:18px;font-weight:bold">
+  <div id="popupBox" style="background:#fff;padding:22px 30px;border-radius:10px;text-align:center;min-width:260px">
+  
+  <div id="popupText" style="font-size:18px;font-weight:bold">
     ⏳ Please wait...
   </div>
+
+  <button id="waBtn"
+    style="margin-top:18px;display:none;
+    background:#25D366;color:#fff;border:none;
+    padding:12px 18px;border-radius:10px;
+    font-size:16px;font-weight:600;
+    cursor:pointer;">
+    📲 Send message on WhatsApp
+  </button>
+
+</div>
+
 </div>
 
 <!-- JS (UNCHANGED) -->
 <script>
+  let isSaving = false;
+
+let waMessage = "";
+
+let popupLoader = document.getElementById("popupLoader");
+let popupText = document.getElementById("popupText");
+let waBtn = document.getElementById("waBtn");
+
+let activeRequest = 0;
+
+async function loadLastSavedFromSheet(){
+  const box = document.getElementById("lastSavedInfo");
+
+  try{
+    const res = await fetch(SCRIPT_URL + "?lastSaved=true");
+    const data = await res.json();
+
+    if(data.status === "EMPTY"){
+      box.innerText = "No data saved yet";
+    }else{
+      box.innerHTML = `📅 Date: <b>${data.date}</b>`;
+    }
+  }catch(err){
+    box.innerText = "Unable to load date";
+  }
+}
+
+
+
+function showPopup(text){
+  popupLoader.style.display = "flex";
+  popupText.innerText = text;
+  waBtn.style.display = "none";
+}
+
+function showWhatsappButton(){
+  popupText.innerText = "✅ Saved successfully";
+  waBtn.style.display = "inline-block";
+}
+
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aqSyRrVVrAEEGFRj9RxRrCq66nzaNdoSl96xbyxPXzZGeyUXG0g/exec";
-let popupLoader=null,activeRequest=0;
+  function getWhatsappMessage(date) {
+     const totalInvestment = document.getElementById("InvestmentTotal").innerText;
+  const totalSell = document.getElementById("SellTotal").innerText;
+  const currentTotal = document.getElementById("CurrentTotal").innerText;
+    
+  return `✅ Daily Hisab Saved
+📅 Date: ${date}
+link : https://saurabh01patil.github.io/daily-hisab/index.html
+💸 Total Investment: ₹${totalInvestment}
+💰 Total Sell: ₹${totalSell}
+🏦 Current Saving: ₹${currentTotal}
+(sheet me save kr diya h)`;
+}
+waBtn.onclick = () => {
+  //const waUrl = "https://web.whatsapp.com/send?text=" + encodeURIComponent(waMessage);
+  const waUrl = "https://wa.me/?text=" + encodeURIComponent(waMessage);
+  window.open(waUrl, "_blank");
+
+  popupText.innerText = "⏳ Please wait...";
+  waBtn.style.display = "none";
+  popupLoader.style.display = "none";
+};
+
+
+///let popupLoader=null,activeRequest=0;
   let isDirty = false;
 
 function num(v){return Number(v)||0}
@@ -335,8 +502,7 @@ document.querySelectorAll(".invCash,.invOnline,#SellCash,#SellOnline,#BiryaniMad
   }
 });
 
-function showLoader(t="Please wait..."){popupLoader.style.display="flex";popupLoader.querySelector("div").innerText="⏳ "+t}
-function hideLoader(){popupLoader.style.display="none"}
+
 function goToHistory(){
   if(isDirty){
     if(!confirm("Data save nahi hua hai. History par jana hai?")) return;
@@ -356,6 +522,8 @@ CurrentCash.innerText=pc+num(SellCash.value)-ic;
 CurrentOnline.innerText=po+num(SellOnline.value)-io;
 CurrentTotal.innerText=num(CurrentCash.innerText)+num(CurrentOnline.innerText);
 prevTotal.innerText=pc+po;
+InvestmentTotal.innerText = ic + io;
+
 }
 
 document.querySelectorAll(".invCash,.invOnline,#SellCash,#SellOnline,#BiryaniMade,#FriedMade,#BiryaniLeft,#FriedLeft")
@@ -380,8 +548,7 @@ function clearDayInputs(){
   CurrentOnline.innerText = 0;
   CurrentTotal.innerText = 0;
 
-  // 🔹 weekly info reset
-  weeklyInfo.innerText = "–";
+ 
 }
 
 async function onDateChange(){
@@ -392,47 +559,301 @@ if(!date.value)return;
  clearDayInputs(); 
 
 const id=++activeRequest;
-setInputsDisabled(true);showLoader("Loading data...");
+setInputsDisabled(true);
+if (!isSaving) {
+  showPopup("⏳ Loading data...");
+}
+
 const p=await(await fetch(SCRIPT_URL+"?prevOf="+date.value)).json();
 prevCashInput.value=p.currentCash||0;
 prevOnlineInput.value=p.currentOnline||0;
 const d=await(await fetch(SCRIPT_URL+"?date="+date.value)).json();
 if(d.status!=="NOT_FOUND"){Object.keys(d).forEach(k=>{let e=document.getElementById(k);if(e)e.value=d[k]})}
-const w=await(await fetch(SCRIPT_URL+"?lastWeekOf="+date.value)).json();
-if(w.status!=="NOT_FOUND"){
-weeklyInfo.innerHTML=`<b>Last week (${w.date})</b><br><br>
-🍚 Biryani: ${w.biryaniSold} kg sold<br>
-🍗 Fried: ${w.friedSold} kg sold<br>
-💰 Sell ₹${w.sell}`;
+
+if (!isSaving) {
+  popupLoader.style.display = "none";
 }
-hideLoader();setInputsDisabled(false);calculate();
+setInputsDisabled(false); // 🔓 UNLOCK inputs
+calculate();              // 🔢 recalc previous saving
   isDirty = false; 
 }
 date.addEventListener("change",onDateChange);
 
 async function saveDay(){
-if(!date.value)return alert("Date select karo");
-setInputsDisabled(true);showLoader("Saving data...");
-const data={date:date.value};
-document.querySelectorAll("input").forEach(i=>{if(i.id&&i.type!=="date")data[i.id]=i.value});
-data.CurrentCash=CurrentCash.innerText;
-data.CurrentOnline=CurrentOnline.innerText;
-data.CurrentTotal=CurrentTotal.innerText;
-data.SellTotal=SellTotal.innerText;
-  data.InvestmentCashTotal = invCashTotal.innerText;
-data.InvestmentOnlineTotal = invOnlineTotal.innerText;
-await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify(data)});
-msg.innerText="Saved ✔";
-hideLoader();setInputsDisabled(false);
-  isDirty = false;
+  if(!date.value) return alert("Date select karo");
+ isSaving = true; // 🔒 block date loader
+  setInputsDisabled(true);
+  showPopup("⏳ Saving data...");
 
+  const data={date:date.value};
+  document.querySelectorAll("input").forEach(i=>{
+    if(i.id && i.type!=="date") data[i.id]=i.value
+  });
+
+  data.CurrentCash=CurrentCash.innerText;
+  data.CurrentOnline=CurrentOnline.innerText;
+  data.CurrentTotal=CurrentTotal.innerText;
+  data.SellTotal=SellTotal.innerText;
+  data.InvestmentCashTotal = invCashTotal.innerText;
+  data.InvestmentOnlineTotal = invOnlineTotal.innerText;
+  data.TotalInvestment = Number(invCashTotal.innerText) + Number(invOnlineTotal.innerText);
+
+
+  const res = await fetch(SCRIPT_URL,{
+  method:"POST",
+  body:JSON.stringify(data)
+});
+
+const result = await res.json();
+
+if(result.status === "DATE_SEQUENCE_ERROR"){
+
+  popupText.innerText =
+    "❌ Please complete: " + result.missingDate +
+    "\nRedirecting...";
+
+  setTimeout(()=>{
+    window.location.href =
+      "./close.html?date=" + result.missingDate;
+  },1500);
+
+  return;
 }
 
-window.onload=()=>{popupLoader=document.getElementById("popupLoader");setInputsDisabled(true)}
+
+  isDirty = false;
+setInputsDisabled(false);
+calculate();
+
+  // WhatsApp message ready
+  waMessage = getWhatsappMessage(date.value);
+
+  // 3 sec delay ke baad button dikhao
+  setTimeout(() => {
+    showWhatsappButton();
+    isSaving = false; // 🔓 release
+  }, 3000);
+}
+  // download pdf 
+async function downloadMonthlyPDF(mode){
+
+  const month = document.getElementById("pdfMonth").value;
+
+  if(!month){
+    alert("Month select karo");
+    return;
+  }
+
+  showPopup("⏳ Generating Monthly Report...");
+
+  try{
+
+    const res = await fetch(SCRIPT_URL + "?month=" + month);
+    const data = await res.json();
+
+    if(!Array.isArray(data) || data.length === 0){
+      popupLoader.style.display = "none";
+      alert("Is month ka data nahi mila");
+      return;
+    }
+
+    let totalSales = 0;
+    let totalInvest = 0;
+    let rows = "";
+
+    // ✅ Opening Balance (first day's previous)
+    let openingBalance = data[0].previousBalance || 0;
+
+    let runningBalance = openingBalance;
+
+    data.forEach(d=>{
+
+      totalSales += d.sell;
+      totalInvest += d.investment;
+
+      let tag = "";
+      let tagColor = "";
+
+      // ✅ Stock Purchase Tag
+      if(d.sell == 0 && d.investment > 0){
+        tag = "Stock Purchase";
+        tagColor = "orange";
+      }
+
+      // ✅ Closed Day Tag
+      if(d.sell == 0 && d.investment == 0){
+        tag = "Closed Day";
+        tagColor = "gray";
+      }
+
+      runningBalance = runningBalance + d.sell - d.investment;
+
+      const profitColor = d.profit >= 0 ? "green" : "red";
+
+      rows += `
+        <tr>
+          <td>${d.date}</td>
+          <td>₹${d.sell}</td>
+          <td>₹${d.investment}</td>
+          <td style="color:${profitColor};font-weight:bold;">₹${d.profit}</td>
+          <td style="color:${tagColor};font-weight:bold;">${tag}</td>
+        </tr>
+      `;
+    });
+
+    const closingBalance = runningBalance;
+    const netProfit = closingBalance - openingBalance;
+    const netColor = netProfit >= 0 ? "green" : "red";
+
+    const html = `
+      <html>
+      <head>
+        <title>Biaari Point Statement</title>
+        <style>
+          body{font-family:Arial;padding:20px;}
+          h2{color:#144d3d;}
+          table{border-collapse:collapse;width:100%;margin-top:20px;}
+          th,td{border:1px solid #ccc;padding:8px;text-align:center;}
+          th{background:#f4f4f4;}
+        </style>
+      </head>
+      <body>
+
+        <h2>Biaari Point - Monthly Statement</h2>
+        <p><b>Month:</b> ${month}</p>
+
+        <hr>
+
+        <p><b>Opening Balance:</b> ₹${openingBalance}</p>
+        <p><b>Total Sales:</b> ₹${totalSales}</p>
+        <p><b>Total Investment:</b> ₹${totalInvest}</p>
+        <p style="color:${netColor};font-size:18px;">
+          <b>Operational Profit:</b> ₹${netProfit}
+        </p>
+        <p><b>Closing Balance:</b> ₹${closingBalance}</p>
+
+        <hr>
+
+        <table>
+          <tr>
+            <th>Date</th>
+            <th>Sell</th>
+            <th>Investment</th>
+            <th>Profit</th>
+            <th>Tag</th>
+          </tr>
+          ${rows}
+        </table>
+
+      </body>
+      </html>
+    `;
+
+    popupLoader.style.display = "none";
+
+    if(mode === "view"){
+      const win = window.open("", "", "width=900,height=700");
+      win.document.write(html);
+      win.document.close();
+    }
+
+    if(mode === "download"){
+      const blob = new Blob([html], { type: "text/html" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "Biaari_Point_" + month + "_Statement.html";
+      link.click();
+    }
+
+  }catch(err){
+    popupLoader.style.display = "none";
+    alert("Error generating report");
+  }
+}
+async function loadLastDiesel(){
+  try{
+    const res = await fetch(SCRIPT_URL + "?lastDiesel=true");
+    const data = await res.json();
+
+    const box = document.getElementById("lastDieselBox");
+
+    if(data.status === "NOT_FOUND"){
+      box.innerText = "⛽ No diesel record found";
+      return;
+    }
+
+    box.innerText =
+      `⛽ Last Diesel: ₹${data.amount} on ${data.date}`;
+
+  }catch(err){
+    document.getElementById("lastDieselBox").innerText =
+      "⛽ Unable to load";
+  }
+}
+
+window.onload = () => {
+  popupLoader = document.getElementById("popupLoader");
+  setInputsDisabled(true);
+  loadLastSavedFromSheet();
+   loadLastDiesel(); 
+};
+
+
+
 </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
