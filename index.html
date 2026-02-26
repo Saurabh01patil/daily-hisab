@@ -283,11 +283,7 @@ input{
   <p class="total">Total ₹ <span id="prevTotal">0</span></p>
 </div>
 
-<!-- WEEKLY INFO -->
-<div class="container info">
-  <div class="section">Weekly Info</div>
-  <span id="weeklyInfo">–</span>
-</div>
+
 
 <!-- DATE -->
 <div class="container">
@@ -515,8 +511,7 @@ function clearDayInputs(){
   CurrentOnline.innerText = 0;
   CurrentTotal.innerText = 0;
 
-  // 🔹 weekly info reset
-  weeklyInfo.innerText = "–";
+ 
 }
 
 async function onDateChange(){
@@ -537,13 +532,7 @@ prevCashInput.value=p.currentCash||0;
 prevOnlineInput.value=p.currentOnline||0;
 const d=await(await fetch(SCRIPT_URL+"?date="+date.value)).json();
 if(d.status!=="NOT_FOUND"){Object.keys(d).forEach(k=>{let e=document.getElementById(k);if(e)e.value=d[k]})}
-const w=await(await fetch(SCRIPT_URL+"?lastWeekOf="+date.value)).json();
-if(w.status!=="NOT_FOUND"){
-weeklyInfo.innerHTML=`<b>Last week (${w.date})</b><br><br>
-🍚 Biryani: ${w.biryaniSold} kg sold<br>
-🍗 Fried: ${w.friedSold} kg sold<br>
-💰 Sell ₹${w.sell}`;
-}
+
 if (!isSaving) {
   popupLoader.style.display = "none";
 }
@@ -642,6 +631,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
