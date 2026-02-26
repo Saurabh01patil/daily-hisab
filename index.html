@@ -622,6 +622,77 @@ calculate();
     isSaving = false; // 🔓 release
   }, 3000);
 }
+  async function downloadMonthlyPDF(){
+
+  const month = document.getElementById("pdfMonth").value;
+
+  if(!month){
+    alert("Month select karo");
+    return;
+  }
+
+  showPopup("⏳ Generating Monthly Report...");
+
+  try{
+    const res = await fetch(SCRIPT_URL + "?month=" + month);
+    const data = await res.json();
+
+    if(!Array.isArray(data) || data.length === 0){
+      popupLoader.style.display = "none";
+      alert("Is month ka data nahi mila");
+      return;
+    }
+
+    let totalSales = 0;
+    let totalInvest = 0;
+    let rows = "";
+
+    data.forEach(d=>{
+      totalSales += d.sell;
+      totalInvest += d.investment;
+
+      rows += `
+        <tr>
+          <td>${d.date}</td>
+          <td>₹${d.sell}</td>
+          <td>₹${d.investment}</td>
+          <td>₹${d.profit}</td>
+        </tr>
+      `;
+    });
+
+    const netProfit = totalSales - totalInvest;
+
+    const html = `
+      <h2>Biaari Point - Monthly Statement</h2>
+      <p><b>Month:</b> ${month}</p>
+      <p><b>Total Sales:</b> ₹${totalSales}</p>
+      <p><b>Total Investment:</b> ₹${totalInvest}</p>
+      <p><b>Net Profit:</b> ₹${netProfit}</p>
+      <hr>
+      <table border="1" cellpadding="8" cellspacing="0" width="100%">
+        <tr>
+          <th>Date</th>
+          <th>Sell</th>
+          <th>Investment</th>
+          <th>Profit</th>
+        </tr>
+        ${rows}
+      </table>
+    `;
+
+    popupLoader.style.display = "none";
+
+    const win = window.open("", "", "width=900,height=700");
+    win.document.write(html);
+    win.document.close();
+    win.print();
+
+  }catch(err){
+    popupLoader.style.display = "none";
+    alert("Error generating report");
+  }
+}
 async function loadLastDiesel(){
   try{
     const res = await fetch(SCRIPT_URL + "?lastDiesel=true");
@@ -656,6 +727,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
