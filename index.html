@@ -296,16 +296,28 @@ input{
       border:1px solid #ccc;
     ">
 
-    <button onclick="downloadMonthlyPDF()" style="
+    <!-- 👁 VIEW -->
+    <button onclick="downloadMonthlyPDF('view')" style="
+      background:#1e4fa3;
+      color:#fff;
+      border:none;
+      padding:10px 18px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:600;">
+      👁 View
+    </button>
+
+    <!-- ⬇ DOWNLOAD -->
+    <button onclick="downloadMonthlyPDF('download')" style="
       background:#144d3d;
       color:#fff;
       border:none;
       padding:10px 18px;
       border-radius:10px;
       cursor:pointer;
-      font-weight:600;
-    ">
-      Download PDF
+      font-weight:600;">
+      ⬇ Download
     </button>
 
   </div>
@@ -622,7 +634,7 @@ calculate();
     isSaving = false; // 🔓 release
   }, 3000);
 }
-  async function downloadMonthlyPDF(){
+async function downloadMonthlyPDF(mode){
 
   const month = document.getElementById("pdfMonth").value;
 
@@ -634,6 +646,7 @@ calculate();
   showPopup("⏳ Generating Monthly Report...");
 
   try{
+
     const res = await fetch(SCRIPT_URL + "?month=" + month);
     const data = await res.json();
 
@@ -651,43 +664,73 @@ calculate();
       totalSales += d.sell;
       totalInvest += d.investment;
 
+      const profitColor = d.profit >= 0 ? "green" : "red";
+
       rows += `
         <tr>
           <td>${d.date}</td>
           <td>₹${d.sell}</td>
           <td>₹${d.investment}</td>
-          <td>₹${d.profit}</td>
+          <td style="color:${profitColor};font-weight:bold;">₹${d.profit}</td>
         </tr>
       `;
     });
 
     const netProfit = totalSales - totalInvest;
+    const netColor = netProfit >= 0 ? "green" : "red";
 
     const html = `
-      <h2>Biaari Point - Monthly Statement</h2>
-      <p><b>Month:</b> ${month}</p>
-      <p><b>Total Sales:</b> ₹${totalSales}</p>
-      <p><b>Total Investment:</b> ₹${totalInvest}</p>
-      <p><b>Net Profit:</b> ₹${netProfit}</p>
-      <hr>
-      <table border="1" cellpadding="8" cellspacing="0" width="100%">
-        <tr>
-          <th>Date</th>
-          <th>Sell</th>
-          <th>Investment</th>
-          <th>Profit</th>
-        </tr>
-        ${rows}
-      </table>
+      <html>
+      <head>
+        <title>Biaari Point Statement</title>
+        <style>
+          body{font-family:Arial;padding:20px;}
+          h2{color:#144d3d;}
+          table{border-collapse:collapse;width:100%;margin-top:20px;}
+          th,td{border:1px solid #ccc;padding:8px;text-align:center;}
+          th{background:#f4f4f4;}
+        </style>
+      </head>
+      <body>
+
+        <h2>Biaari Point - Monthly Statement</h2>
+        <p><b>Month:</b> ${month}</p>
+
+        <p><b>Total Sales:</b> ₹${totalSales}</p>
+        <p><b>Total Investment:</b> ₹${totalInvest}</p>
+        <p style="color:${netColor};font-size:18px;">
+          <b>Net Profit:</b> ₹${netProfit}
+        </p>
+
+        <table>
+          <tr>
+            <th>Date</th>
+            <th>Sell</th>
+            <th>Investment</th>
+            <th>Profit</th>
+          </tr>
+          ${rows}
+        </table>
+
+      </body>
+      </html>
     `;
 
     popupLoader.style.display = "none";
 
-    const win = window.open("", "", "width=900,height=700");
-    win.document.write(html);
-    win.document.close();
-    win.print();
+    if(mode === "view"){
+      const win = window.open("", "", "width=900,height=700");
+      win.document.write(html);
+      win.document.close();
+    }
 
+    if(mode === "download"){
+  const blob = new Blob([html], { type: "text/html" }); // correct type
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "Biaari_Point_" + month + "_Statement.html";
+  link.click();
+}
   }catch(err){
     popupLoader.style.display = "none";
     alert("Error generating report");
@@ -727,6 +770,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
