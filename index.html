@@ -634,6 +634,7 @@ calculate();
     isSaving = false; // 🔓 release
   }, 3000);
 }
+  // download pdf 
 async function downloadMonthlyPDF(mode){
 
   const month = document.getElementById("pdfMonth").value;
@@ -660,9 +661,32 @@ async function downloadMonthlyPDF(mode){
     let totalInvest = 0;
     let rows = "";
 
+    // ✅ Opening Balance (first day's previous)
+    let openingBalance = data[0].previousBalance || 0;
+
+    let runningBalance = openingBalance;
+
     data.forEach(d=>{
+
       totalSales += d.sell;
       totalInvest += d.investment;
+
+      let tag = "";
+      let tagColor = "";
+
+      // ✅ Stock Purchase Tag
+      if(d.sell == 0 && d.investment > 0){
+        tag = "Stock Purchase";
+        tagColor = "orange";
+      }
+
+      // ✅ Closed Day Tag
+      if(d.sell == 0 && d.investment == 0){
+        tag = "Closed Day";
+        tagColor = "gray";
+      }
+
+      runningBalance = runningBalance + d.sell - d.investment;
 
       const profitColor = d.profit >= 0 ? "green" : "red";
 
@@ -672,11 +696,13 @@ async function downloadMonthlyPDF(mode){
           <td>₹${d.sell}</td>
           <td>₹${d.investment}</td>
           <td style="color:${profitColor};font-weight:bold;">₹${d.profit}</td>
+          <td style="color:${tagColor};font-weight:bold;">${tag}</td>
         </tr>
       `;
     });
 
-    const netProfit = totalSales - totalInvest;
+    const closingBalance = runningBalance;
+    const netProfit = closingBalance - openingBalance;
     const netColor = netProfit >= 0 ? "green" : "red";
 
     const html = `
@@ -696,11 +722,17 @@ async function downloadMonthlyPDF(mode){
         <h2>Biaari Point - Monthly Statement</h2>
         <p><b>Month:</b> ${month}</p>
 
+        <hr>
+
+        <p><b>Opening Balance:</b> ₹${openingBalance}</p>
         <p><b>Total Sales:</b> ₹${totalSales}</p>
         <p><b>Total Investment:</b> ₹${totalInvest}</p>
         <p style="color:${netColor};font-size:18px;">
-          <b>Net Profit:</b> ₹${netProfit}
+          <b>Operational Profit:</b> ₹${netProfit}
         </p>
+        <p><b>Closing Balance:</b> ₹${closingBalance}</p>
+
+        <hr>
 
         <table>
           <tr>
@@ -708,6 +740,7 @@ async function downloadMonthlyPDF(mode){
             <th>Sell</th>
             <th>Investment</th>
             <th>Profit</th>
+            <th>Tag</th>
           </tr>
           ${rows}
         </table>
@@ -725,12 +758,13 @@ async function downloadMonthlyPDF(mode){
     }
 
     if(mode === "download"){
-  const blob = new Blob([html], { type: "text/html" }); // correct type
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "Biaari_Point_" + month + "_Statement.html";
-  link.click();
-}
+      const blob = new Blob([html], { type: "text/html" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "Biaari_Point_" + month + "_Statement.html";
+      link.click();
+    }
+
   }catch(err){
     popupLoader.style.display = "none";
     alert("Error generating report");
@@ -770,6 +804,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
