@@ -284,7 +284,32 @@ input{
 </div>
 
 
+<!-- MONTHLY PDF REPORT -->
+<div class="container info">
+  <div class="section">Monthly Statement</div>
 
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+    
+    <input type="month" id="pdfMonth" style="
+      padding:10px;
+      border-radius:8px;
+      border:1px solid #ccc;
+    ">
+
+    <button onclick="downloadMonthlyPDF()" style="
+      background:#144d3d;
+      color:#fff;
+      border:none;
+      padding:10px 18px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:600;
+    ">
+      Download PDF
+    </button>
+
+  </div>
+</div>
 <!-- DATE -->
 <div class="container">
   <div class="section">Date</div>
@@ -631,6 +656,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
