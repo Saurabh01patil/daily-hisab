@@ -86,11 +86,16 @@ body{
   .header-actions{
     width:100%;
     justify-content:space-between;
+    flex-wrap:wrap;
   }
 
   #lastDieselBox{
-    flex:1;
+    flex:1 1 100%;
     text-align:center;
+  }
+
+  .header-actions .history-btn{
+    flex:1;
   }
 
 }
@@ -259,7 +264,9 @@ input{
       <div id="lastDieselBox">
         ⛽ Last Diesel: Loading...
       </div>
-
+      <button onclick="openSheet()" class="history-btn">
+        📊 Sheet
+      </button>
       <button onclick="goToHistory()" class="history-btn">
         History
       </button>
@@ -509,7 +516,62 @@ function goToHistory(){
   }
   window.location.href = "./history.html";
 }
+// 📊 Google Sheet ka link yahan paste karo (browser ke address bar se copy karke)
+const SHEET_URL = "PASTE_YOUR_GOOGLE_SHEET_LINK_HERE";
 
+function openSheet(){
+  if(isDirty){
+    if(!confirm("Data save nahi hua hai. Sheet kholni hai?")) return;
+  }
+  if(SHEET_URL.indexOf("PASTE_") === 0){
+    alert("Sheet ka link code mein abhi daala nahi hai (SHEET_URL)");
+    return;
+  }
+  window.open(SHEET_URL, "_blank");
+}
+
+function addDays(s, n){
+  const [y, m, d] = s.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10);
+}
+
+// ---- Draft: close page par jane se pehle bhara hua data bacha lo ----
+const DRAFT_KEY = "dailyHisabDraft";
+const DRAFT_FIELDS = ".invCash,.invOnline,#SellCash,#SellOnline,#BiryaniMade,#FriedMade,#BiryaniLeft,#FriedLeft";
+
+function saveDraft(){
+  try{
+    const fields = {};
+    document.querySelectorAll(DRAFT_FIELDS).forEach(i=>{
+      if(i.id) fields[i.id] = i.value;
+    });
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({date: date.value, fields: fields}));
+  }catch(e){}
+}
+
+function clearDraft(){
+  try{ localStorage.removeItem(DRAFT_KEY); }catch(e){}
+}
+
+function restoreDraft(d){
+  try{
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if(!raw) return false;
+    const draft = JSON.parse(raw);
+    if(!draft || draft.date !== d || !draft.fields) return false;
+
+    Object.keys(draft.fields).forEach(id=>{
+      const e = document.getElementById(id);
+      if(e && !e.readOnly && e.type !== "date") e.value = draft.fields[id];
+    });
+
+    calculate();
+    isDirty = true;   // abhi save nahi hua
+    return true;
+  }catch(e){
+    return false;
+  }
+}
 
 function calculate(){
 let ic=0,io=0;
@@ -608,19 +670,27 @@ const result = await res.json();
 
 if(result.status === "DATE_SEQUENCE_ERROR"){
 
+  saveDraft();   // bhara hua data bacha lo
+
   popupText.innerText =
-    "❌ Please complete: " + result.missingDate +
-    "\nRedirecting...";
+    "❌ Pehle " + result.missingDate + " se band din mark karo.\n" +
+    "Aapka bhara hua data safe hai.\nRedirecting...";
 
   setTimeout(()=>{
     window.location.href =
-      "./close.html?date=" + result.missingDate;
+      "./close.html?date=" + result.missingDate +
+      "&upto=" + addDays(date.value, -1) +
+      "&back=" + date.value;
   },1500);
 
   return;
 }
 
-
+  clearDraft();
+  isDirty = false;
+setInputsDisabled(false);
+calculate();
+  
   isDirty = false;
 setInputsDisabled(false);
 calculate();
@@ -791,11 +861,25 @@ async function loadLastDiesel(){
   }
 }
 
-window.onload = () => {
+window.onload = async () => {
   popupLoader = document.getElementById("popupLoader");
   setInputsDisabled(true);
   loadLastSavedFromSheet();
-   loadLastDiesel(); 
+  loadLastDiesel();
+
+  // close page se wapas aaye to wahi date khol do aur bhara hua data wapas daal do
+  const q = new URLSearchParams(window.location.search);
+  const qDate = q.get("date");
+
+  if(qDate && /^\d{4}-\d{2}-\d{2}$/.test(qDate)){
+    date.value = qDate;
+    await onDateChange();
+
+    if(q.get("restore") === "1" && restoreDraft(qDate)){
+      showPopup("✅ Aapka bhara hua data wapas aa gaya.\nAb Save dabao.");
+      setTimeout(()=>{ popupLoader.style.display = "none"; }, 2200);
+    }
+  }
 };
 
 
