@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Daily Hisab</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<script src="./config.js"></script>
 <style>
 body{
   font-family:Arial;
@@ -471,7 +471,6 @@ function showWhatsappButton(){
   waBtn.style.display = "inline-block";
 }
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aqSyRrVVrAEEGFRj9RxRrCq66nzaNdoSl96xbyxPXzZGeyUXG0g/exec";
   function getWhatsappMessage(date) {
      const totalInvestment = document.getElementById("InvestmentTotal").innerText;
   const totalSell = document.getElementById("SellTotal").innerText;
@@ -516,8 +515,7 @@ function goToHistory(){
   }
   window.location.href = "./history.html";
 }
-// 📊 Google Sheet ka link yahan paste karo (browser ke address bar se copy karke)
-const SHEET_URL = "PASTE_YOUR_GOOGLE_SHEET_LINK_HERE";
+
 
 function openSheet(){
   if(isDirty){
