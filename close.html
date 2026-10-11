@@ -2,14 +2,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Mark Day Closed</title>
+<title>Mark Days Closed</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
   font-family:Arial;
   background:#faf9f7;
-  padding:30px;
+  padding:30px 16px;
   text-align:center;
 }
 
@@ -17,13 +17,50 @@ body{
   background:#fff;
   padding:30px;
   border-radius:16px;
-  max-width:400px;
+  max-width:440px;
   margin:auto;
   box-shadow:0 6px 18px rgba(0,0,0,0.08);
 }
 
+.dates{
+  display:flex;
+  gap:12px;
+  margin-top:16px;
+}
+
+.dates label{
+  flex:1;
+  text-align:left;
+  font-size:13px;
+  color:#666;
+}
+
+.dates input{
+  display:block;
+  width:100%;
+  box-sizing:border-box;
+  margin-top:6px;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  font-size:15px;
+}
+
+.count{
+  margin:14px 0 0;
+  font-size:14px;
+  font-weight:600;
+  color:#144d3d;
+  min-height:20px;
+}
+
+.count.bad{
+  color:#b30000;
+}
+
 textarea{
   width:100%;
+  box-sizing:border-box;
   padding:12px;
   border-radius:10px;
   border:1px solid #ddd;
@@ -31,7 +68,7 @@ textarea{
   font-size:14px;
 }
 
-button{
+#saveBtn{
   margin-top:18px;
   padding:14px 20px;
   background:#b30000;
@@ -43,8 +80,13 @@ button{
   cursor:pointer;
 }
 
-button:hover{
+#saveBtn:hover{
   opacity:0.9;
+}
+
+#saveBtn:disabled{
+  opacity:0.5;
+  cursor:default;
 }
 </style>
 </head>
@@ -52,27 +94,105 @@ button:hover{
 <body>
 
 <div class="box">
-  <h2>🚫 Mark Day Closed</h2>
-  <p id="dateText"></p>
+  <h2>🚫 Mark Days Closed</h2>
 
-  <textarea id="comment"
-    placeholder="Reason (Rain / Festival / Maintenance / Personal Leave)">
-  </textarea>
+  <div class="dates">
+    <label>From
+      <input type="date" id="fromDate">
+    </label>
+    <label>To
+      <input type="date" id="toDate">
+    </label>
+  </div>
 
-  <button onclick="saveClosed()">Save Closed Day</button>
+  <p id="countText" class="count"></p>
+
+  <textarea id="comment" rows="3" placeholder="Reason (Rain / Festival / Maintenance / Personal Leave)"></textarea>
+
+  <button id="saveBtn" onclick="saveClosed()">Save Closed Days</button>
 </div>
 
 <script>
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aqSyRrVVrAEEGFRj9RxRrCq66nzaNdoSl96xbyxPXzZGeyUXG0g/exec";
 
+const MAX_DAYS = 62; // ek baar mein max itne din
+
+const fromEl = document.getElementById("fromDate");
+const toEl = document.getElementById("toDate");
+const countText = document.getElementById("countText");
+const saveBtn = document.getElementById("saveBtn");
+
+/* ---------- date helpers (local date, UTC bug nahi) ---------- */
+
+function todayLocal(){
+  const n = new Date();
+  return n.getFullYear() + "-" +
+    String(n.getMonth() + 1).padStart(2, "0") + "-" +
+    String(n.getDate()).padStart(2, "0");
+}
+
+function addDays(s, n){
+  const [y, m, d] = s.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10);
+}
+
+function listDates(from, to){
+  const out = [];
+  let cur = from;
+  while(cur <= to && out.length <= MAX_DAYS){
+    out.push(cur);
+    cur = addDays(cur, 1);
+  }
+  return out;
+}
+
+/* ---------- setup ---------- */
+
 const params = new URLSearchParams(window.location.search);
-const selectedDate = params.get("date");
+const urlDate = params.get("date");
 
-document.getElementById("dateText").innerText =
-  "Date: " + selectedDate;
+fromEl.max = todayLocal();
+toEl.max = todayLocal();
 
-// 🔥 Create Popup Dynamically
+if(urlDate && /^\d{4}-\d{2}-\d{2}$/.test(urlDate)){
+  fromEl.value = urlDate;
+  toEl.value = urlDate;   // default: sirf ek din (pehle jaisa)
+}
+
+fromEl.addEventListener("change", () => {
+  if(!toEl.value || toEl.value < fromEl.value) toEl.value = fromEl.value;
+  updateCount();
+});
+toEl.addEventListener("change", updateCount);
+
+function updateCount(){
+  countText.className = "count";
+  const from = fromEl.value, to = toEl.value;
+
+  if(!from || !to){ countText.innerText = ""; return; }
+
+  if(to < from){
+    countText.className = "count bad";
+    countText.innerText = "To date, From date se pehle nahi ho sakti";
+    return;
+  }
+
+  const n = listDates(from, to).length;
+
+  if(n > MAX_DAYS){
+    countText.className = "count bad";
+    countText.innerText = "Ek baar mein max " + MAX_DAYS + " din";
+    return;
+  }
+
+  countText.innerText = n + " din close honge";
+}
+
+updateCount();
+
+/* ---------- popup ---------- */
+
 const popup = document.createElement("div");
 popup.style.position = "fixed";
 popup.style.inset = "0";
@@ -87,75 +207,177 @@ popup.innerHTML = `
     border-radius:12px;
     font-weight:bold;
     font-size:16px;
-    text-align:center;">
-    <span id="popupMsg">Saving...</span>
+    text-align:center;
+    max-width:340px;">
+    <div id="popupMsg" style="white-space:pre-line;">Saving...</div>
+    <button id="popupOk" style="
+      display:none;
+      margin-top:16px;
+      padding:10px 22px;
+      background:#144d3d;
+      color:#fff;
+      border:none;
+      border-radius:10px;
+      font-size:15px;
+      font-weight:600;
+      cursor:pointer;">OK</button>
   </div>
 `;
 document.body.appendChild(popup);
 
-function showPopup(text){
-  document.getElementById("popupMsg").innerText = text;
+const popupMsg = document.getElementById("popupMsg");
+const popupOk = document.getElementById("popupOk");
+
+function showPopup(text, onOk){
+  popupMsg.innerText = text;
   popup.style.display = "flex";
+  if(onOk){
+    popupOk.style.display = "inline-block";
+    popupOk.onclick = onOk;
+  }else{
+    popupOk.style.display = "none";
+  }
 }
 
 function hidePopup(){
   popup.style.display = "none";
 }
 
+async function getJson(url){
+  const r = await fetch(url);
+  return r.json();
+}
+
+function goHome(){
+  window.location.href = "./index.html";
+}
+
+/* ---------- save ---------- */
+
 async function saveClosed(){
 
-  if(!selectedDate){
-    alert("Invalid date");
+  const from = fromEl.value;
+  const to = toEl.value;
+  const comment = document.getElementById("comment").value.trim();
+
+  if(!from || !to){
+    alert("From aur To date select karo");
     return;
   }
 
-  const comment = document.getElementById("comment").value;
+  if(to < from){
+    alert("To date, From date se pehle nahi ho sakti");
+    return;
+  }
 
-  if(!comment.trim()){
+  if(!comment){
     alert("Please enter reason");
     return;
   }
 
-  showPopup("⏳ Saving closed day...");
-  document.querySelector("button").disabled = true;
+  const dates = listDates(from, to);
+
+  if(dates.length > MAX_DAYS){
+    alert("Ek baar mein max " + MAX_DAYS + " din");
+    return;
+  }
+
+  if(dates.length > 1){
+    if(!confirm(dates.length + " din (" + from + " se " + to + ") Closed mark honge. Continue?")) return;
+  }
+
+  saveBtn.disabled = true;
+
+  const saved = [];
+  const skipped = [];   // jin dino ka data pehle se bhara hai, unhe chheda nahi
 
   try{
 
-    const prev = await fetch(
-      SCRIPT_URL + "?prevOf=" + selectedDate
-    ).then(r => r.json());
+    showPopup("⏳ Loading...");
 
-    const data = {
-      date: selectedDate,
-      Status: "Closed",
-      Comment: comment,
-      CurrentCash: prev.currentCash || 0,
-      CurrentOnline: prev.currentOnline || 0,
-      CurrentTotal:
-        (Number(prev.currentCash)||0) +
-        (Number(prev.currentOnline)||0)
-    };
+    const prev = await getJson(SCRIPT_URL + "?prevOf=" + from);
+    let cash = Number(prev.currentCash) || 0;
+    let online = Number(prev.currentOnline) || 0;
 
-    await fetch(SCRIPT_URL,{
-      method:"POST",
-      body: JSON.stringify(data)
-    });
+    for(let i = 0; i < dates.length; i++){
 
-    showPopup("✅ Closed day saved");
+      const d = dates[i];
+      showPopup("⏳ Saving " + (i + 1) + " / " + dates.length + "\n" + d);
 
-    setTimeout(()=>{
-      window.location.href = "./index.html";
-    },1200);
+      // pehle se data bhara ho to overwrite mat karo
+      const existing = await getJson(SCRIPT_URL + "?date=" + d);
+
+      if(existing && existing.status !== "NOT_FOUND" && existing.Status !== "Closed"){
+        skipped.push(d);
+        // is din ke baad ka balance server se lo
+        const p = await getJson(SCRIPT_URL + "?prevOf=" + addDays(d, 1));
+        cash = Number(p.currentCash) || 0;
+        online = Number(p.currentOnline) || 0;
+        continue;
+      }
+
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          date: d,
+          Status: "Closed",
+          Comment: comment,
+          CurrentCash: cash,
+          CurrentOnline: online,
+          CurrentTotal: cash + online
+        })
+      });
+
+      let result = {};
+      try{ result = await res.json(); }catch(e){}
+
+      if(result.status === "DATE_SEQUENCE_ERROR"){
+        const miss = result.missingDate;
+        if(miss && miss < from) fromEl.value = miss;
+        if(toEl.value < fromEl.value) toEl.value = fromEl.value;
+        updateCount();
+        saveBtn.disabled = false;
+        showPopup(
+          "❌ Pehle " + miss + " ka hisaab chahiye.\n" +
+          "From date " + (miss && miss < from ? "wahi kar di hai, " : "check karo, ") + "dobara Save karo.\n" +
+          (saved.length ? "(" + saved.length + " din save ho chuke hain)" : ""),
+          hidePopup
+        );
+        return;
+      }
+
+      saved.push(d);
+    }
+
+    let msg = "✅ " + saved.length + " din Closed save hue";
+    if(skipped.length){
+      msg += "\n\n⚠️ In dino ka data pehle se bhara hai, chheda nahi:\n" + skipped.join(", ");
+      showPopup(msg, goHome);
+    }else{
+      showPopup(msg);
+      setTimeout(goHome, 1200);
+    }
 
   }catch(err){
-    hidePopup();
-    alert("Error saving data");
-    document.querySelector("button").disabled = false;
+
+    saveBtn.disabled = false;
+
+    let msg = "❌ Error: internet check karo.";
+    if(saved.length){
+      msg += "\n" + saved.length + " din save ho chuke hain (" + saved[0] + " se " + saved[saved.length - 1] + ").\n" +
+             "Baaki ke liye dobara Save karo.";
+      // agli date se shuru karne ke liye From set karo
+      const next = addDays(saved[saved.length - 1], 1);
+      if(next <= toEl.value){
+        fromEl.value = next;
+        updateCount();
+      }
+    }
+    showPopup(msg, hidePopup);
   }
 }
 
 </script>
-
 
 </body>
 </html>
