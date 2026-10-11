@@ -4,4 +4,4 @@
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aqSyRrVVrAEEGFRj9RxRrCq66nzaNdoSl96xbyxPXzZGeyUXG0g/exec";
 
 // Google Sheet ka link (index par 📊 Sheet button ke liye)
-const SHEET_URL = "PASTE_YOUR_GOOGLE_SHEET_LINK_HERE";
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/1FaCSyENIB1IMwpa_speemrxo5ISOWYkeKMzw4CFPick/edit?gid=0#gid=0";
