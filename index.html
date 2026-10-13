@@ -169,6 +169,16 @@ input{
 .date-box{
   text-align:center;
 }
+  /* Cancel button (close page se wapas aane par dikhta hai) */
+.sticky-save #cancelBtn{
+  display:none;
+  width:auto;
+  flex:0 0 auto;
+  margin-right:12px;
+  padding-left:22px;
+  padding-right:22px;
+  background:#b30000;
+}
 
 .date-box input{
   padding:14px 18px;
@@ -404,6 +414,7 @@ input{
 
 <!-- SAVE BUTTON -->
 <div class="sticky-save">
+  <button id="cancelBtn" onclick="cancelRestored()">✖ Cancel</button>
   <button onclick="saveDay()">💾 Save / Update Day</button>
   <p id="msg"></p>
 </div>
@@ -550,7 +561,12 @@ function saveDraft(){
 function clearDraft(){
   try{ localStorage.removeItem(DRAFT_KEY); }catch(e){}
 }
-
+function cancelRestored(){
+  if(!confirm("Ye bhara hua data hata dein? Save nahi hoga.")) return;
+  clearDraft();
+  isDirty = false;
+  window.location.href = "./index.html";
+}
 function restoreDraft(d){
   try{
     const raw = localStorage.getItem(DRAFT_KEY);
@@ -685,6 +701,7 @@ if(result.status === "DATE_SEQUENCE_ERROR"){
 }
 
   clearDraft();
+  document.getElementById("cancelBtn").style.display = "none";
   isDirty = false;
 setInputsDisabled(false);
 calculate();
@@ -869,14 +886,19 @@ window.onload = async () => {
   const q = new URLSearchParams(window.location.search);
   const qDate = q.get("date");
 
-  if(qDate && /^\d{4}-\d{2}-\d{2}$/.test(qDate)){
+   if(qDate && /^\d{4}-\d{2}-\d{2}$/.test(qDate)){
     date.value = qDate;
     await onDateChange();
 
     if(q.get("restore") === "1" && restoreDraft(qDate)){
-      showPopup("✅ Aapka bhara hua data wapas aa gaya.\nAb Save dabao.");
+      document.getElementById("cancelBtn").style.display = "block";
+      showPopup("✅ Aapka bhara hua data wapas aa gaya.\nSave ya Cancel dabao.");
       setTimeout(()=>{ popupLoader.style.display = "none"; }, 2200);
     }
+
+    // ek baar restore ho gaya, ab refresh par dobara na ho
+    clearDraft();
+    history.replaceState(null, "", window.location.pathname);
   }
 };
 
