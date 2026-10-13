@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Mark Days Closed</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  font-family:Arial;
+  background:#faf9f7;
+  padding:30px 16px;
+  text-align:center;
+}
+
+.box{
+  background:#fff;
+  padding:30px;
+  border-radius:16px;
+  max-width:440px;
+  margin:auto;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+.dates{
+  display:flex;
+  gap:12px;
+  margin-top:16px;
+}
+
+.dates label{
+  flex:1;
+  text-align:left;
+  font-size:13px;
+  color:#666;
+}
+
+.dates input{
+  display:block;
+  width:100%;
+  box-sizing:border-box;
+  margin-top:6px;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  font-size:15px;
+}
+
+.count{
+  margin:14px 0 0;
+  font-size:14px;
+  font-weight:600;
+  color:#144d3d;
+  min-height:20px;
+}
+
+.count.bad{
+  color:#b30000;
+}
+
+textarea{
+  width:100%;
+  box-sizing:border-box;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  margin-top:12px;
+  font-size:14px;
+}
+
+#saveBtn{
+  margin-top:18px;
+  padding:14px 20px;
+  background:#b30000;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+#saveBtn:hover{
+  opacity:0.9;
+}
+
+#saveBtn:disabled{
+  opacity:0.5;
+  cursor:default;
+}
+</style>
+  <script src="./config.js"></script>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>🚫 Mark Days Closed</h2>
+
+  <div class="dates">
+    <label>From
+      <input type="date" id="fromDate">
+    </label>
+    <label>To
+      <input type="date" id="toDate">
+    </label>
+  </div>
+
+  <p id="countText" class="count"></p>
+
+  <textarea id="comment" rows="3" placeholder="Reason (Rain / Festival / Maintenance / Personal Leave)"></textarea>
+
+  <button id="saveBtn" onclick="saveClosed()">Save Closed Days</button>
+</div>
+
+<script>
+
+
+
+const MAX_DAYS = 62; // ek baar mein max itne din
+
+const fromEl = document.getElementById("fromDate");
+const toEl = document.getElementById("toDate");
+const countText = document.getElementById("countText");
+const saveBtn = document.getElementById("saveBtn");
+
+/* ---------- date helpers (local date, UTC bug nahi) ---------- */
+
+function todayLocal(){
+  const n = new Date();
+  return n.getFullYear() + "-" +
+    String(n.getMonth() + 1).padStart(2, "0") + "-" +
+    String(n.getDate()).padStart(2, "0");
+}
+
+function addDays(s, n){
+  const [y, m, d] = s.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10);
+}
+
+function listDates(from, to){
+  const out = [];
+  let cur = from;
+  while(cur <= to && out.length <= MAX_DAYS){
+    out.push(cur);
+    cur = addDays(cur, 1);
+  }
+  return out;
+}
+
+/* ---------- setup ---------- */
+
+const params = new URLSearchParams(window.location.search);
+const urlDate = params.get("date");
+const uptoDate = params.get("upto");   // index se aaya: is date tak band karna hai
+const backDate = params.get("back");   // kaam ke baad is date par wapas jana hai
+
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+fromEl.max = todayLocal();
+toEl.max = todayLocal();
+
+if(urlDate && DATE_RE.test(urlDate)){
+  fromEl.value = urlDate;
+  toEl.value = urlDate;   // default: sirf ek din
+
+  // index se aaye ho to "aaj ke pichle din" tak apne aap bhar do
+  if(uptoDate && DATE_RE.test(uptoDate) && uptoDate >= urlDate && uptoDate <= todayLocal()){
+    toEl.value = uptoDate;
+  }
+}
+
+fromEl.addEventListener("change", () => {
+  if(!toEl.value || toEl.value < fromEl.value) toEl.value = fromEl.value;
+  updateCount();
+});
+toEl.addEventListener("change", updateCount);
+
+function updateCount(){
+  countText.className = "count";
+  const from = fromEl.value, to = toEl.value;
+
+  if(!from || !to){ countText.innerText = ""; return; }
+
+  if(to < from){
+    countText.className = "count bad";
+    countText.innerText = "To date, From date se pehle nahi ho sakti";
+    return;
+  }
+
+  const n = listDates(from, to).length;
+
+  if(n > MAX_DAYS){
+    countText.className = "count bad";
+    countText.innerText = "Ek baar mein max " + MAX_DAYS + " din";
+    return;
+  }
+
+  countText.innerText = n + " din close honge";
+}
+
+updateCount();
+
+/* ---------- popup ---------- */
+
+const popup = document.createElement("div");
+popup.style.position = "fixed";
+popup.style.inset = "0";
+popup.style.background = "rgba(0,0,0,0.4)";
+popup.style.display = "none";
+popup.style.alignItems = "center";
+popup.style.justifyContent = "center";
+popup.innerHTML = `
+  <div style="
+    background:#fff;
+    padding:25px 35px;
+    border-radius:12px;
+    font-weight:bold;
+    font-size:16px;
+    text-align:center;
+    max-width:340px;">
+    <div id="popupMsg" style="white-space:pre-line;">Saving...</div>
+    <button id="popupOk" style="
+      display:none;
+      margin-top:16px;
+      padding:10px 22px;
+      background:#144d3d;
+      color:#fff;
+      border:none;
+      border-radius:10px;
+      font-size:15px;
+      font-weight:600;
+      cursor:pointer;">OK</button>
+  </div>
+`;
+document.body.appendChild(popup);
+
+const popupMsg = document.getElementById("popupMsg");
+const popupOk = document.getElementById("popupOk");
+
+function showPopup(text, onOk){
+  popupMsg.innerText = text;
+  popup.style.display = "flex";
+  if(onOk){
+    popupOk.style.display = "inline-block";
+    popupOk.onclick = onOk;
+  }else{
+    popupOk.style.display = "none";
+  }
+}
+
+function hidePopup(){
+  popup.style.display = "none";
+}
+
+async function getJson(url){
+  const r = await fetch(url);
+  return r.json();
+}
+
+function goHome(){
+  if(backDate && DATE_RE.test(backDate)){
+    // wahi date kholo aur bhara hua data wapas daalo
+    window.location.href = "./index.html?date=" + backDate + "&restore=1";
+  }else{
+    window.location.href = "./index.html";
+  }
+}
+
+/* ---------- save ---------- */
+
+async function saveClosed(){
+
+  const from = fromEl.value;
+  const to = toEl.value;
+  const comment = document.getElementById("comment").value.trim();
+
+  if(!from || !to){
+    alert("From aur To date select karo");
+    return;
+  }
+
+  if(to < from){
+    alert("To date, From date se pehle nahi ho sakti");
+    return;
+  }
+
+  if(!comment){
+    alert("Please enter reason");
+    return;
+  }
+
+  const dates = listDates(from, to);
+
+  if(dates.length > MAX_DAYS){
+    alert("Ek baar mein max " + MAX_DAYS + " din");
+    return;
+  }
+
+  if(dates.length > 1){
+    if(!confirm(dates.length + " din (" + from + " se " + to + ") Closed mark honge. Continue?")) return;
+  }
+
+  saveBtn.disabled = true;
+
+  const saved = [];
+  const skipped = [];   // jin dino ka data pehle se bhara hai, unhe chheda nahi
+
+  try{
+
+    showPopup("⏳ Loading...");
+
+    const prev = await getJson(SCRIPT_URL + "?prevOf=" + from);
+    let cash = Number(prev.currentCash) || 0;
+    let online = Number(prev.currentOnline) || 0;
+
+    for(let i = 0; i < dates.length; i++){
+
+      const d = dates[i];
+      showPopup("⏳ Saving " + (i + 1) + " / " + dates.length + "\n" + d);
+
+      // pehle se data bhara ho to overwrite mat karo
+      const existing = await getJson(SCRIPT_URL + "?date=" + d);
+
+      if(existing && existing.status !== "NOT_FOUND" && existing.Status !== "Closed"){
+        skipped.push(d);
+        // is din ke baad ka balance server se lo
+        const p = await getJson(SCRIPT_URL + "?prevOf=" + addDays(d, 1));
+        cash = Number(p.currentCash) || 0;
+        online = Number(p.currentOnline) || 0;
+        continue;
+      }
+
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          date: d,
+          Status: "Closed",
+          Comment: comment,
+          CurrentCash: cash,
+          CurrentOnline: online,
+          CurrentTotal: cash + online
+        })
+      });
+
+      let result = {};
+      try{ result = await res.json(); }catch(e){}
+
+      if(result.status === "DATE_SEQUENCE_ERROR"){
+        const miss = result.missingDate;
+        if(miss && miss < from) fromEl.value = miss;
+        if(toEl.value < fromEl.value) toEl.value = fromEl.value;
+        updateCount();
+        saveBtn.disabled = false;
+        showPopup(
+          "❌ Pehle " + miss + " ka hisaab chahiye.\n" +
+          "From date " + (miss && miss < from ? "wahi kar di hai, " : "check karo, ") + "dobara Save karo.\n" +
+          (saved.length ? "(" + saved.length + " din save ho chuke hain)" : ""),
+          hidePopup
+        );
+        return;
+      }
+
+      saved.push(d);
+    }
+
+    let msg = "✅ " + saved.length + " din Closed save hue";
+        if(backDate) msg += "\nAb aapka bhara hua data wapas khulega";
+    if(skipped.length){
+      msg += "\n\n⚠️ In dino ka data pehle se bhara hai, chheda nahi:\n" + skipped.join(", ");
+      showPopup(msg, goHome);
+    }else{
+      showPopup(msg);
+      setTimeout(goHome, 1200);
+    }
+
+  }catch(err){
+
+    saveBtn.disabled = false;
+
+    let msg = "❌ Error: internet check karo.";
+    if(saved.length){
+      msg += "\n" + saved.length + " din save ho chuke hain (" + saved[0] + " se " + saved[saved.length - 1] + ").\n" +
+             "Baaki ke liye dobara Save karo.";
+      // agli date se shuru karne ke liye From set karo
+      const next = addDays(saved[saved.length - 1], 1);
+      if(next <= toEl.value){
+        fromEl.value = next;
+        updateCount();
+      }
+    }
+    showPopup(msg, hidePopup);
+  }
+}
+
+</script>
+
+</body>
+</html>

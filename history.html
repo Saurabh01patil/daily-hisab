@@ -84,7 +84,10 @@ body{
 .sell{ border-left:6px solid #f59e0b; }
 .invest{ border-left:6px solid #3b82f6; }
 .save{ border-left:6px solid #22c55e; }
-
+.closed{
+  border-left:6px solid #b30000;
+  grid-column:1 / -1;
+}
 /* RECENT LIST */
 #historyList{
   margin-top:32px;
@@ -141,7 +144,7 @@ body{
   .header h1{font-size:28px}
 }
 </style>
-
+<script src="./config.js"></script>
 </head>
 
 <body>
@@ -182,7 +185,7 @@ body{
 
 <button class="back-btn" onclick="goBack()">⬅ Back to Calculator</button>
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby78QG_u65D6IXG_06aqSyRrVVrAEEGFRj9RxRrCq66nzaNdoSl96xbyxPXzZGeyUXG0g/exec";
+
 
 const historyDate = document.getElementById("historyDate");
 const historyText = document.getElementById("historyText");
@@ -211,6 +214,70 @@ async function loadHistory(){
       historyText.innerHTML = "❌ No records found for this date.";
       return;
     }
+
+    // 🚫 Dukan band thi
+    if(String(data.Status || "").toLowerCase() === "closed"){
+      historyText.innerHTML = `
+        <div class="card closed">
+          <h4>🚫 Dukan band thi</h4>
+          <p>${esc(String(data.Comment || "").trim() || "Reason nahi likha")}</p>
+        </div>
+
+        <div class="card save">
+          <h4>Current Cash</h4>
+          <p>₹${data.CurrentCash || 0}</p>
+        </div>
+
+        <div class="card save">
+          <h4>Current Online</h4>
+          <p>₹${data.CurrentOnline || 0}</p>
+        </div>
+
+        <div class="card save">
+          <h4>Total Saving</h4>
+          <p>₹${data.CurrentTotal || 0}</p>
+        </div>
+      `;
+      return;
+    }
+
+    historyText.innerHTML = `
+      <div class="card sell">
+        <h4>Total Sell</h4>
+        <p>₹${data.SellTotal || 0}</p>
+      </div>
+
+      <div class="card invest">
+        <h4>Investment Cash</h4>
+        <p>₹${data.InvestmentCashTotal || 0}</p>
+      </div>
+
+      <div class="card invest">
+        <h4>Investment Online</h4>
+        <p>₹${data.InvestmentOnlineTotal || 0}</p>
+      </div>
+
+      <div class="card save">
+        <h4>Current Cash</h4>
+        <p>₹${data.CurrentCash || 0}</p>
+      </div>
+
+      <div class="card save">
+        <h4>Current Online</h4>
+        <p>₹${data.CurrentOnline || 0}</p>
+      </div>
+
+      <div class="card save">
+        <h4>Total Saving</h4>
+        <p>₹${data.CurrentTotal || 0}</p>
+      </div>
+    `;
+
+  }catch(err){
+    errorBox.style.display = "block";
+    historyText.innerHTML = "";
+  }
+}
 
 historyText.innerHTML = `
   <div class="card sell">
@@ -271,11 +338,14 @@ async function loadRecentList(){
     `;
   }catch(e){}
 }
-
+function esc(t){
+  return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
 function selectDate(d){
   historyDate.value = d;
   loadHistory();
 }
+  
 
 function goBack(){
   window.location.href = "index.html";
