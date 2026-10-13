@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>History - Daily Hisab</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="./config.js"></script>
 <style>
 body{
   font-family: Arial, sans-serif;
@@ -88,6 +89,7 @@ body{
   border-left:6px solid #b30000;
   grid-column:1 / -1;
 }
+
 /* RECENT LIST */
 #historyList{
   margin-top:32px;
@@ -144,7 +146,6 @@ body{
   .header h1{font-size:28px}
 }
 </style>
-<script src="./config.js"></script>
 </head>
 
 <body>
@@ -169,7 +170,7 @@ body{
   ">
 
   <!-- DATA OUTPUT -->
-<div id="historyText" class="summary">
+  <div id="historyText" class="summary">
     Loading...
   </div>
 
@@ -184,13 +185,18 @@ body{
 
 
 <button class="back-btn" onclick="goBack()">⬅ Back to Calculator</button>
-<script>
 
+<script>
 
 const historyDate = document.getElementById("historyDate");
 const historyText = document.getElementById("historyText");
 const historyList = document.getElementById("historyList");
 const errorBox = document.getElementById("errorBox");
+
+// text ko HTML mein safe dikhane ke liye
+function esc(t){
+  return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
 
 // default = today
 historyDate.value = new Date().toISOString().split("T")[0];
@@ -205,6 +211,7 @@ loadRecentList();
 async function loadHistory(){
   const d = historyDate.value;
   historyText.innerHTML = "Loading...";
+  errorBox.style.display = "none";
 
   try{
     const res = await fetch(SCRIPT_URL + "?date=" + d);
@@ -241,6 +248,7 @@ async function loadHistory(){
       return;
     }
 
+    // Normal din
     historyText.innerHTML = `
       <div class="card sell">
         <h4>Total Sell</h4>
@@ -279,44 +287,6 @@ async function loadHistory(){
   }
 }
 
-historyText.innerHTML = `
-  <div class="card sell">
-    <h4>Total Sell</h4>
-    <p>₹${data.SellTotal || 0}</p>
-  </div>
-
-  <div class="card invest">
-    <h4>Investment Cash</h4>
-    <p>₹${data.InvestmentCashTotal || 0}</p>
-  </div>
-
-  <div class="card invest">
-    <h4>Investment Online</h4>
-    <p>₹${data.InvestmentOnlineTotal || 0}</p>
-  </div>
-
-  <div class="card save">
-    <h4>Current Cash</h4>
-    <p>₹${data.CurrentCash || 0}</p>
-  </div>
-
-  <div class="card save">
-    <h4>Current Online</h4>
-    <p>₹${data.CurrentOnline || 0}</p>
-  </div>
-
-  <div class="card save">
-    <h4>Total Saving</h4>
-    <p>₹${data.CurrentTotal || 0}</p>
-  </div>
-`;
-
-  }catch(err){
-    errorBox.style.display = "block";
-    historyText.innerHTML = "";
-  }
-}
-
 // 🔹 recent history list
 async function loadRecentList(){
   try{
@@ -338,18 +308,16 @@ async function loadRecentList(){
     `;
   }catch(e){}
 }
-function esc(t){
-  return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-}
+
 function selectDate(d){
   historyDate.value = d;
   loadHistory();
 }
-  
 
 function goBack(){
   window.location.href = "index.html";
 }
+
 </script>
 
 </body>
