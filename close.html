@@ -152,13 +152,21 @@ function listDates(from, to){
 
 const params = new URLSearchParams(window.location.search);
 const urlDate = params.get("date");
+const uptoDate = params.get("upto");   // index se aaya: is date tak band karna hai
+const backDate = params.get("back");   // kaam ke baad is date par wapas jana hai
 
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 fromEl.max = todayLocal();
 toEl.max = todayLocal();
 
-if(urlDate && /^\d{4}-\d{2}-\d{2}$/.test(urlDate)){
+if(urlDate && DATE_RE.test(urlDate)){
   fromEl.value = urlDate;
-  toEl.value = urlDate;   // default: sirf ek din (pehle jaisa)
+  toEl.value = urlDate;   // default: sirf ek din
+
+  // index se aaye ho to "aaj ke pichle din" tak apne aap bhar do
+  if(uptoDate && DATE_RE.test(uptoDate) && uptoDate >= urlDate && uptoDate <= todayLocal()){
+    toEl.value = uptoDate;
+  }
 }
 
 fromEl.addEventListener("change", () => {
@@ -250,7 +258,12 @@ async function getJson(url){
 }
 
 function goHome(){
-  window.location.href = "./index.html";
+  if(backDate && DATE_RE.test(backDate)){
+    // wahi date kholo aur bhara hua data wapas daalo
+    window.location.href = "./index.html?date=" + backDate + "&restore=1";
+  }else{
+    window.location.href = "./index.html";
+  }
 }
 
 /* ---------- save ---------- */
@@ -351,6 +364,7 @@ async function saveClosed(){
     }
 
     let msg = "✅ " + saved.length + " din Closed save hue";
+        if(backDate) msg += "\nAb aapka bhara hua data wapas khulega";
     if(skipped.length){
       msg += "\n\n⚠️ In dino ka data pehle se bhara hai, chheda nahi:\n" + skipped.join(", ");
       showPopup(msg, goHome);
